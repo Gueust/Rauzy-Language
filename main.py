@@ -1,6 +1,38 @@
 import json
 from pprint import pprint
 
+def _get_value(obj, key):
+  """Returns the value associated to key in obj.
+  
+  If the value does not exist, or is empty, it returns None"""
+  if key not in obj:
+    return None
+  if obj[key] == "":
+    return None
+  else:
+    return obj[key]
+
+# Functions to get the attributes associated to keys in dictionaries
+def _nature(obj):
+  return _get_value(obj, "nature")
+
+def _extends(obj):
+  return _get_value(obj, "extends")
+
+def _objects(obj):
+  return _get_value(obj, "objects")
+
+def _relations(obj):
+  return _get_value(obj, "relations")
+
+def _properties(obj):
+  return _get_value(obj, "properties")
+
+def _fromSet(obj):
+  return _get_value(obj, "from")
+
+def _toSet(obj):
+  return _get_value(obj, "to")
 
 class Object:
   """Abstract Rauzy object"""
