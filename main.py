@@ -1,10 +1,16 @@
 import json
 from pprint import pprint
 
+import inspect
+
+def _function_name():
+  """Returns the name of the function that calls this one"""
+  return inspect.stack()[1][3]
+
 def _get_value(obj, key):
   """Returns the value associated to key in obj.
   
-  If the value does not exist, or is empty, it returns None"""
+  If the value does not exist or is empty, it returns None"""
   if key not in obj:
     return None
   if obj[key] == "":
@@ -34,6 +40,14 @@ def _fromSet(obj):
 def _toSet(obj):
   return _get_value(obj, "to")
 
+def _directional(obj):
+  if "directional" not in obj:
+    return None
+  else:
+    return obj["directional"]
+
+
+
 class Object:
   """Abstract Rauzy object"""
   def __init__(self):
@@ -42,13 +56,37 @@ class Object:
     self.relations = {}
     self.properties = {}
 
-  def add_object(name, obj):
+  def __repr__(self):
+    return "extends: " + self.extends.__str__() + "\n" + \
+           "objects: " + str(self.objects) + "\n" + \
+           "relations: " + self.relations.__str__() + "\n" + \
+           "properties: " + self.properties.__str__() + "\n"
+
+  def add_object(self, name, obj):
+    if not isinstance(name, str):
+      raise TypeError(_function_name() + " first argument must be a string")
+    if name == "":
+      raise TypeError(_function_name() + " first argument must be a non empty string")
+    if not isinstance(obj, Object):
+      raise TypeError(_function_name() + " second argument must be an Object")
     self.objects[name] = obj
 
-  def add_relation(name, relation):
+  def add_relation(self, name, relation):
+    if not isinstance(name, str):
+      raise TypeError(_function_name() + " first argument must be a string")
+    if name == "":
+      raise TypeError(_function_name() + " first argument must be a non empty string")
+    if not isinstance(obj, Relation):
+      raise TypeError(_function_name() + " second argument must be a Relation")
     self.relations[name] = relation
 
-  def add_property(key, value):
+  def add_property(self, key, value):
+    if not isinstance(key, str):
+      raise TypeError(_function_name() + " first argument must be a string")
+    if key == "":
+      raise TypeError(_function_name() + " first argument must be a non empty string")
+    if not isinstance(value,str):
+      raise TypeError(_function_name() + " second argument must be a string")
     self.properties[key] = value
 
 class Relation:
@@ -74,3 +112,8 @@ if __name__ == '__main__':
   pprint(data["maps"][0]["id"])
   pprint(data["masks"]["id"])
   pprint(data["om_points"])
+  a = Object()
+  b = Object()
+  a.add_object("name", b)
+  pprint(a)
+  print(a)
