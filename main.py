@@ -1,5 +1,6 @@
 import json
 from pprint import pprint
+from library import Library
 
 import inspect
 
@@ -58,13 +59,23 @@ class Object:
     self.relations = {}
     self.properties = {}
 
+  #TODO: look at the difference between __str__ and __repr__
   def __repr__(self):
     return "extends: " + self.extends.__str__() + "\n" + \
            "objects: " + str(self.objects) + "\n" + \
            "relations: " + self.relations.__str__() + "\n" + \
            "properties: " + self.properties.__str__() + "\n"
 
+  def __copy__(self):
+    new = Object()
+    new.objects = copy(self.objects)
+    new.relations = copy(self.relations)
+    new.properties = copy(self.properties)
+
   def add_object(self, name, obj):
+    if self.extends is not None:
+      #TODO: modify the type of the error
+      raise TypeError("Illegal call of " + _function_name() + " on an objects extending " + str(self.extends))
     if not isinstance(name, str):
       raise TypeError(_function_name() + " first argument must be a string")
     if name == "":
@@ -74,6 +85,7 @@ class Object:
     self.objects[name] = obj
 
   def add_relation(self, name, relation):
+    ##TODO: illegal call if extends != None
     if not isinstance(name, str):
       raise TypeError(_function_name() + " first argument must be a string")
     if name == "":
@@ -90,6 +102,12 @@ class Object:
     if not isinstance(value,str):
       raise TypeError(_function_name() + " second argument must be a string")
     self.properties[key] = value
+  
+  #TODO: do a decorator for @FirstArgumentIsStr
+  def remove_property(self, key):
+    #TODO : find the correct grammar
+    del self.properties.key
+
 
 class Relation:
   """Abstract Rauzy relation"""
@@ -101,27 +119,11 @@ class Relation:
     self.properties = {}
 
 
-def parse_model(path):
-  obj = load_json(path)
-  """Parse a json object representing a model (i.e. a root object)"""
-  lib_file = _library(obj)
-  #TODO: define precisely the path of the library with respect to the path
-  if lib_file is None:
-    library = {}
-  else:
-    try:
-      location = open(lib_file)
-    except IOError as err:
-      raise IOError(format(err) + " \n The library path must be relative to the model file")
-  # build the library
-  #TODO: implement the loading of the library
-
-def _instanciate(class_name, library):
+def _instanciate(class_name, obj_library, link_library):
   """Returns an instance of class_name present in library"""
   if class_name not in library:
     raise LookupError("The class " + class_name + " is not in the library")
-  #TODO: implement the instanciation
-  return Object()
+  return obj_library[class_name].__copy__() #TODO: call the correct function
 
 def parse_object(obj, library):
   """Parse a json object and return the Rauzy object"""
@@ -149,7 +151,7 @@ def parse_object(obj, library):
     # check that value is a string
     object.properties[name] = value
 
-def parse_relation(rlt):
+def parse_relation(rlt, lib = False):
   """Parse a json object representing a Rauzy relation and returns the
   corresponding Rauzy relation"""
   nature = _nature(rlt)
@@ -160,14 +162,15 @@ def parse_relation(rlt):
     relation = _instanciate(extends)
   else:
     relation = Relation()
+    # If it is a relation of the library, there is no from and to sets
+    if not lib:
+      fromSet = _fromSet(rlt)
+      for name, contained_obj in fromSet:
+        relation.fromSet[name] = parse_object(contained_obj)
 
-    fromSet = _fromSet(rlt)
-    for name, contained_obj in fromSet:
-      relation.fromSet[name] = parse_object(contained_obj)
-
-    toSet = _toSet(obj)
-    for name, contained_obj in toSet:
-      relation.toSet[name] = parse_object(contained_obj)
+      toSet = _toSet(obj)
+      for name, contained_obj in toSet:
+        relation.toSet[name] = parse_object(contained_obj)
 
   properties = _properties(obj)
   for key, value in properties:
