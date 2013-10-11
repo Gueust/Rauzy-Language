@@ -62,15 +62,30 @@ class Object:
 
   #TODO: look at the difference between __str__ and __repr__
   def __repr__(self):
-    if self.extends is None:
-      ext = "null"
-    else:
-      ext = self.extends.__str__()
+    return json.dumps(self._get_dict(), indent=1)
 
-    return "{ extends: " + ext + ", \n" + \
-           "objects: " + str(self.objects) + ", \n" + \
-           "relations: " + self.relations.__str__() + ", \n" + \
-           "properties: " + self.properties.__str__() + "} \n"
+#  if self.extends is None:
+#      ext = "null"
+#    else:
+#      ext = '"'+self.extends.__str__()+'"'
+#    return     '{ "nature": "object", \n' + \
+#           '"extends": ' + json.dumps(self.extends) + ", \n" + \
+#           '"objects": ' + json.dumps(self.objects) + ", \n" + \
+#           '"relations": ' + json.dumps(self.relations) + ", \n" + \
+#           '"properties": ' + json.dumps(self.properties) + "} \n"
+
+  def _get_dict(self):
+    result = {}
+    result["nature"] = "object"
+    result["extends"] = self.extends
+    result["objects"] = {}
+    for key, value in self.objects.items():
+      result["objects"][key] = value._get_dict()
+    result["relations"] = {}
+    for key, value in self.relations.items():
+      result["relation"][key] = value._get_dict()
+    result["properties"] = self.properties
+    return result
 
   def add_object(self, name, obj):
     if self.extends is not None:
@@ -117,6 +132,14 @@ class Relation:
     self.toSet = {}
     self.directional = None
     self.properties = {}
+    
+  def _get_dict(self):
+    result = {}
+    result["nature"] = "relation"
+    result["extends"] = self.extends
+    #TODO: do the rest
+    result["properties"] = self.properties
+    return result
 
 
 def _instanciate_obj(class_name, obj_library, link_library):
@@ -187,12 +210,11 @@ def load_json(file, debug = False):
   return data
 
 if __name__ == '__main__':
-  data = load_json('example.json', True)
-  pprint(data["maps"][0]["id"])
-  pprint(data["masks"]["id"])
-  pprint(data["om_points"])
+  data = load_json('example.json', False)
   a = Object()
   b = Object()
   a.add_object("name", b)
-  pprint(a)
+  print(a._get_dict())
+  print("Tableee\n")
+  print(json.dumps(a._get_dict(), indent=2))
   print(a)
