@@ -1,9 +1,12 @@
+# Import built-in modules
 import json
 from pprint import pprint
+from copy import deepcopy
+
+# Import user modules
 from library import Library
 
 import inspect
-
 def _function_name():
   """Returns the name of the function that calls this one"""
   return inspect.stack()[1][3]
@@ -11,7 +14,8 @@ def _function_name():
 def _get_value(obj, key):
   """Returns the value associated to key in obj.
   
-  If the value does not exist or is empty, it returns None"""
+  Obj is supposed to be a dictionnary.
+  If the value does not exist or is empty, it returns None."""
   if key not in obj:
     return None
   if obj[key] == "":
@@ -42,10 +46,7 @@ def _toSet(obj):
   return _get_value(obj, "to")
 
 def _directional(obj):
-  if "directional" not in obj:
-    return None
-  else:
-    return obj["directional"]
+  return _get_value(obj, "directional")
 
 def _library(obj):
   return _get_value(obj, "library")
@@ -61,16 +62,15 @@ class Object:
 
   #TODO: look at the difference between __str__ and __repr__
   def __repr__(self):
-    return "extends: " + self.extends.__str__() + "\n" + \
-           "objects: " + str(self.objects) + "\n" + \
-           "relations: " + self.relations.__str__() + "\n" + \
-           "properties: " + self.properties.__str__() + "\n"
+    if self.extends is None:
+      ext = "null"
+    else:
+      ext = self.extends.__str__()
 
-  def __copy__(self):
-    new = Object()
-    new.objects = copy(self.objects)
-    new.relations = copy(self.relations)
-    new.properties = copy(self.properties)
+    return "{ extends: " + ext + ", \n" + \
+           "objects: " + str(self.objects) + ", \n" + \
+           "relations: " + self.relations.__str__() + ", \n" + \
+           "properties: " + self.properties.__str__() + "} \n"
 
   def add_object(self, name, obj):
     if self.extends is not None:
@@ -119,11 +119,11 @@ class Relation:
     self.properties = {}
 
 
-def _instanciate(class_name, obj_library, link_library):
+def _instanciate_obj(class_name, obj_library, link_library):
   """Returns an instance of class_name present in library"""
   if class_name not in library:
     raise LookupError("The class " + class_name + " is not in the library")
-  return obj_library[class_name].__copy__() #TODO: call the correct function
+  return deepcopy(obj_library[class_name])
 
 def parse_object(obj, library):
   """Parse a json object and return the Rauzy object"""
@@ -159,7 +159,7 @@ def parse_relation(rlt, lib = False):
     raise Exception("It is not a relation")
   extends = _extends(rlt)
   if extends != None:
-    relation = _instanciate(extends)
+    relation = _instanciate_rlt(extends)
   else:
     relation = Relation()
     # If it is a relation of the library, there is no from and to sets
