@@ -87,7 +87,7 @@ class Library:
 
     Returns a list of pair (class_name, element) in an order valid with the dependency chain.
     The list of pair is implemented using an ordered dictionnary."""
-    graph = Dependency_graph
+    graph = Dependency_graph()
     # We add all the relations in the graph
     for key, rlt in self.dic_rlt:
       graph.add_class(key, rlt)
@@ -104,7 +104,7 @@ class Library:
 
     Returns a list of pair (class_name, element) in an order valid with the dependency chain.
     The list of pair is implemented using an ordered dictionnary."""
-    graph = Dependency_graph
+    graph = Dependency_graph()
     # We add all the objects in the graph
     for key, obj in self.dic_obj:
       graph.add_class(key, obj)
