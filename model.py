@@ -21,7 +21,8 @@ def parse_model(path):
     except IOError as err:
       raise IOError(format(err) + " \n The library path must be relative to the model file")
   
-    json_lib = json.load(location)
+    # We load the library using ordered dictionaries
+    json_lib = json.load(location, object_pairs_hook=collections.OrderedDict())
     # Implement the loading of the library: first the relations, then the objects
     if "relations" in json_lib:
       for relation_class, relation in json_lib["relations"]:
