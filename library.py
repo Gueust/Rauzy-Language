@@ -1,4 +1,4 @@
-#TODO: 
+import json
 # - Build a dependency graph in addition to the dictionaries for objects.
 # - Ensure that this graph has no cycle
 # - List the objects in a correct order according to the decendency chain
@@ -119,3 +119,11 @@ class Library:
             graph.add_dependency(key, contained_obj.extends)
 
     return graph.build()
+
+    def __repr__(self):
+      json_object = {}
+      json_object["nature"] = "library"
+      json_object["relations"] = _build_rlt()
+      json_object["objects"] = _build_obj()
+
+      return json.dumps(json_object, indent=1)
