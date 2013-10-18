@@ -5,6 +5,7 @@ from copy import deepcopy
 
 # Import user modules
 from library import Library
+import model
 
 import inspect
 def _function_name():
@@ -214,7 +215,10 @@ if __name__ == '__main__':
   a = Object()
   b = Object()
   a.add_object("name", b)
-  print(a._get_dict())
-  print("Tableee\n")
-  print(json.dumps(a._get_dict(), indent=2))
-  print(a)
+  #print(a)
+
+  model = model.Model()
+  model.obj = a
+  model.lib_path = "lib.lib"
+  model.model_name = "model.mo"
+  model.save()
