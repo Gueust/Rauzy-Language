@@ -101,7 +101,7 @@ class Object:
     self.objects[name] = obj
 
   def add_relation(self, name, relation):
-    ##TODO: illegal call if extends != None
+    ##TODO: illegal call if extends is not None
     if not isinstance(name, str):
       raise TypeError(_function_name() + " first argument must be a string")
     if name == "":
@@ -142,23 +142,17 @@ class Relation:
     result["properties"] = self.properties
     return result
 
-
-def _instanciate_obj(class_name, obj_library, link_library):
-  """Returns an instance of class_name present in library"""
-  if class_name not in library:
-    raise LookupError("The class " + class_name + " is not in the library")
-  return deepcopy(obj_library[class_name])
-
 def parse_object(obj, library):
-  """Parse a json object and return the Rauzy object"""
-  # obj must be a dictionnary
+  """Parse a json object and return the Rauzy object
+
+  obj must be a dictionary"""
   nature = _nature(obj)
   if nature != "object":
-    raise Exception("It is not an object")
-  #object = Object()
+    raise Exception("It is not an object :", nature)
+
   extends = _extends(obj)
-  if extends != None:
-    object = _instanciate(extends, library)
+  if extends is not None:
+    object = library.instanciate_obj(extends)
   else:
     object = Object()
 
@@ -182,7 +176,7 @@ def parse_relation(rlt, lib = False):
   if nature != "relation":
     raise Exception("It is not a relation")
   extends = _extends(rlt)
-  if extends != None:
+  if extends is not None:
     relation = _instanciate_rlt(extends)
   else:
     relation = Relation()
@@ -215,7 +209,7 @@ if __name__ == '__main__':
   a = Object()
   b = Object()
   a.add_object("name", b)
-  #print(a)
+  print(a)
 
   model = model.Model()
   model.obj = a
