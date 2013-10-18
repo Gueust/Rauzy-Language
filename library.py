@@ -1,4 +1,4 @@
-import json
+import json, collections
 # - Build a dependency graph in addition to the dictionaries for objects.
 # - Ensure that this graph has no cycle
 # - List the objects in a correct order according to the decendency chain
@@ -82,6 +82,28 @@ class Library:
     self.dic_obj = {}
     self.dic_rlt = {}
 
+  def __repr__(self):
+    return json.dumps(self._get_dict(), indent=1)
+
+  def _get_dict(self):
+    result = collections.OrderedDict()
+    result["nature"] = "library"
+    result["objects"] = self._build_obj()
+    result["relations"] = self._build_rlt()
+    return result
+
+  def save(self, lib_path):
+    library_file = open(lib_path, mode='w')
+    library_file.write(str(self))
+
+  def instanciate_obj(self, class_name):
+    """Returns an instance of class_name present in library"""
+    return deepcopy(dic_obj[class_name])
+
+  def instanciate_rlt(self, name):
+    """Returns an instance of class_name present in library"""
+    return deepcopy(dic_rlt[class_name])
+
   def _build_rlt(self):
     """Returns a valid list of (class_name, class_relation)
 
@@ -120,10 +142,10 @@ class Library:
 
     return graph.build()
 
-    def __repr__(self):
-      json_object = {}
-      json_object["nature"] = "library"
-      json_object["relations"] = _build_rlt()
-      json_object["objects"] = _build_obj()
+  def __repr__(self):
+    json_object = {}
+    json_object["nature"] = "library"
+    json_object["relations"] = self._build_rlt()
+    json_object["objects"] = self._build_obj()
 
-      return json.dumps(json_object, indent=1)
+    return json.dumps(json_object, indent=1)
