@@ -209,10 +209,13 @@ if __name__ == '__main__':
   a = Object()
   b = Object()
   a.add_object("name", b)
+  a.add_property("Size", "big")
+  a.add_property("size", "BIG")
   print(a)
 
   model = model.Model()
   model.obj = a
   model.lib_path = "lib.lib"
-  model.model_name = "model.mo"
+  model.lib.dic_obj["test33"] = a
+  model.model_name = "examples/model.model"
   model.save()

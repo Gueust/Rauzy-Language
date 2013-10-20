@@ -1,0 +1,19 @@
+{
+ "objects": {
+  "name": {
+   "objects": {}, 
+   "relations": {}, 
+   "nature": "object", 
+   "extends": null, 
+   "properties": {}
+  }
+ }, 
+ "nature": "object", 
+ "extends": null, 
+ "library": "lib.lib", 
+ "relations": {}, 
+ "properties": {
+  "Size": "big", 
+  "size": "BIG"
+ }
+}

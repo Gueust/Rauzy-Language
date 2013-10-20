@@ -3,6 +3,7 @@ import json, collections
 # - Ensure that this graph has no cycle
 # - List the objects in a correct order according to the decendency chain
 # - Do a loading and saving function
+from typechecker import *
 
 class Dependency:
   """Represent a node of a dependency graph
@@ -34,15 +35,17 @@ class Dependency_graph:
   def __init__(self):
     self.graph = {}
 
-  def add_class(self, name, dep):
+  @typecheck
+  def add_class(self, name: str, dep: Dependency):
     if name in self.graph:
       raise Exception(name + " is already present as a class")
     self.graph[name] = dep
 
-  def remove_class(self, name):
+  @typecheck
+  def remove_class(self, name: str):
     del graph[name]
 
-  def add_dependency(self, name1, name2):
+  def add_dependency(self, name1: str, name2: str):
     """Stores that name1 is dependent of name2"""
     self.graph[name1].depend_on.add(name2)
     self.graph[name2].used_by.add(name1)
@@ -52,7 +55,8 @@ class Dependency_graph:
 
     The order respect the dependency chains: no element is inserted before all
     its dependencies have been inserted."""
-    def remove_element(self, name):
+    @typecheck
+    def remove_element(self, name: str) -> list_of(anything):
       result = collections.OrderedDict()
       for used in element.used_by:
         el = self.graph[used]
@@ -61,11 +65,12 @@ class Dependency_graph:
           result[used] = el
 
           result.extends()
-    no_dependency = collections.OrderedDict()
-    for name, node in self.graph:
+    no_dependency = []
+    copy_graph = dict(self.graph)
+    for name, node in copy_graph.items():
       if node.has_no_dependency():
         # We add the element that has no dependency in the no dependency list
-        no_dependency.append(node)
+        no_dependency.append(node.element)
         # And we remove it in the graph
         del self.graph[name]
         # And we remove this element in the elements that were depending on it
@@ -82,25 +87,34 @@ class Library:
     self.dic_obj = {}
     self.dic_rlt = {}
 
-  def __repr__(self):
-    return json.dumps(self._get_dict(), indent=1)
+  # TODO:
+  # add_obj_class(self, name, obj)
+  # add_rlt_class(self, name, rlt)
+  # rm_obj_class(self, name)
+  # rm_rlt_class(self, name)
 
   def _get_dict(self):
     result = collections.OrderedDict()
     result["nature"] = "library"
-    result["objects"] = self._build_obj()
+    #result["objects"] = self._build_obj()
     result["relations"] = self._build_rlt()
     return result
 
-  def save(self, lib_path):
+  def __repr__(self):
+    return json.dumps(self._get_dict(), indent=1)
+
+  @typecheck
+  def save(self, lib_path: str):
     library_file = open(lib_path, mode='w')
     library_file.write(str(self))
 
-  def instanciate_obj(self, class_name):
+  @typecheck
+  def instanciate_obj(self, class_name: str):
     """Returns an instance of class_name present in library"""
     return deepcopy(dic_obj[class_name])
 
-  def instanciate_rlt(self, name):
+  @typecheck
+  def instanciate_rlt(self, name: str):
     """Returns an instance of class_name present in library"""
     return deepcopy(dic_rlt[class_name])
 
@@ -112,7 +126,7 @@ class Library:
     graph = Dependency_graph()
     # We add all the relations in the graph
     for key, rlt in self.dic_rlt:
-      graph.add_class(key, rlt)
+      graph.add_class(key, Dependency(rlt))
 
     # We add the dependencies between the relations
     for key, rlt in self.dic_rlt:
@@ -128,11 +142,11 @@ class Library:
     The list of pair is implemented using an ordered dictionnary."""
     graph = Dependency_graph()
     # We add all the objects in the graph
-    for key, obj in self.dic_obj:
-      graph.add_class(key, obj)
+    for key, obj in self.dic_obj.items():
+      graph.add_class(key, Dependency(obj))
 
     # We add the dependencies between the objects
-    for key, obj in self.dic_obj:
+    for key, obj in self.dic_obj.items():
       if obj.extends is not None:
         graph.add_dependency(key, obj.extends)
         #TODO: add all dependencies due to the objects list
@@ -142,10 +156,3 @@ class Library:
 
     return graph.build()
 
-  def __repr__(self):
-    json_object = {}
-    json_object["nature"] = "library"
-    json_object["relations"] = self._build_rlt()
-    json_object["objects"] = self._build_obj()
-
-    return json.dumps(json_object, indent=1)
