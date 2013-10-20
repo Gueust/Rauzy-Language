@@ -1,26 +1,26 @@
 {
  "nature": "object", 
- "properties": {
-  "size": "big", 
-  "color": "blue"
- }, 
- "library": "car.lib", 
  "relations": {}, 
+ "extends": null, 
  "objects": {
-  "wheel1": {
-   "properties": {}, 
-   "relations": {}, 
-   "nature": "object", 
-   "objects": {}, 
-   "extends": null
-  }, 
   "wheel2": {
-   "properties": {}, 
-   "relations": {}, 
    "nature": "object", 
+   "relations": {}, 
+   "extends": null, 
    "objects": {}, 
-   "extends": null
+   "properties": {}
+  }, 
+  "wheel1": {
+   "nature": "object", 
+   "relations": {}, 
+   "extends": null, 
+   "objects": {}, 
+   "properties": {}
   }
  }, 
- "extends": null
+ "properties": {
+  "color": "blue", 
+  "size": "big"
+ }, 
+ "library": "car.lib"
 }

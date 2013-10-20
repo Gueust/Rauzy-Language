@@ -1,6 +1,5 @@
-import os, json, collections
+import os, json, collections, core
 from library import Library
-from core import _library
 
 class Model:
   def __init__(self):
@@ -72,3 +71,19 @@ def load(file):
   resulting_model.model_name = os.path.basename(file)
 
   return resulting_model
+
+if __name__ == '__main__':
+  car = core.Object()
+  wheel = core.Object()
+  car.add_object("wheel1", wheel)
+  car.add_object("wheel2", wheel)
+  car.add_property("size", "big")
+  car.add_property("color", "blue")
+  print(car)
+
+  model = Model()
+  model.obj = car
+  model.lib_path = "car.lib"
+  model.lib.dic_obj["wheel"] = wheel
+  model.model_name = "examples/car.model"
+  model.save()

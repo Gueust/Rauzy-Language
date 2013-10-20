@@ -4,8 +4,8 @@ from pprint import pprint
 from copy import deepcopy
 
 # Import user modules
-from library import Library
-import model
+
+
 
 import inspect
 def _function_name():
@@ -203,19 +203,3 @@ def load_json(file, debug = False):
     pprint(data)
   json_data.close()
   return data
-
-if __name__ == '__main__':
-  car = Object()
-  wheel = Object()
-  car.add_object("wheel1", wheel)
-  car.add_object("wheel2", wheel)
-  car.add_property("size", "big")
-  car.add_property("color", "blue")
-  print(car)
-
-  model = model.Model()
-  model.obj = car
-  model.lib_path = "car.lib"
-  model.lib.dic_obj["wheel"] = wheel
-  model.model_name = "examples/car.model"
-  model.save()

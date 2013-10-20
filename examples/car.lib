@@ -1,4 +1,13 @@
 {
  "nature": "library", 
- "relations": []
+ "objects": {
+  "wheel": {
+   "nature": "object", 
+   "relations": {}, 
+   "extends": null, 
+   "objects": {}, 
+   "properties": {}
+  }
+ }, 
+ "relations": {}
 }
