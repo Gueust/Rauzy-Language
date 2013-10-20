@@ -1,0 +1,26 @@
+{
+ "nature": "object", 
+ "properties": {
+  "size": "big", 
+  "color": "blue"
+ }, 
+ "library": "car.lib", 
+ "relations": {}, 
+ "objects": {
+  "wheel1": {
+   "properties": {}, 
+   "relations": {}, 
+   "nature": "object", 
+   "objects": {}, 
+   "extends": null
+  }, 
+  "wheel2": {
+   "properties": {}, 
+   "relations": {}, 
+   "nature": "object", 
+   "objects": {}, 
+   "extends": null
+  }
+ }, 
+ "extends": null
+}

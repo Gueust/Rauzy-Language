@@ -36,7 +36,7 @@ class Model:
       #TODO: make a default name for it
       raise Exception("You are using a library without any name for it")
     if self.lib is not None:
-      self.lib.save(self.lib_path)
+      self.lib.save(os.path.join(os.path.dirname(self.model_name), self.lib_path))
 
 def load(file):
   """Parse a file as a json object representing a model (i.e. a root object)"""

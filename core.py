@@ -205,17 +205,17 @@ def load_json(file, debug = False):
   return data
 
 if __name__ == '__main__':
-  data = load_json('example.json', False)
-  a = Object()
-  b = Object()
-  a.add_object("name", b)
-  a.add_property("Size", "big")
-  a.add_property("size", "BIG")
-  print(a)
+  car = Object()
+  wheel = Object()
+  car.add_object("wheel1", wheel)
+  car.add_object("wheel2", wheel)
+  car.add_property("size", "big")
+  car.add_property("color", "blue")
+  print(car)
 
   model = model.Model()
-  model.obj = a
-  model.lib_path = "lib.lib"
-  model.lib.dic_obj["test33"] = a
-  model.model_name = "examples/model.model"
+  model.obj = car
+  model.lib_path = "car.lib"
+  model.lib.dic_obj["wheel"] = wheel
+  model.model_name = "examples/car.model"
   model.save()
