@@ -18,10 +18,11 @@ class Model:
     If the library is not empty, lib_path must not be None."""
     if self.obj is None:
       raise Exception("The model does not contain any object. \
-                      Save cannot be applied")
+                      Put an object in Model.obj")
 
     if self.model_name is None:
-      raise Exception("You have not specified the name of the model file")
+      raise Exception("You have not specified the name of the model file. \
+                      Put the name in Model.model_name")
 
     obj_file = open(self.model_name, mode='w')
     # We get the dictionary representation of the object
@@ -43,6 +44,8 @@ def load(file):
   json_model = json.load(json_data)
 
   resulting_model = Model()
+  rlt_library = resulting_model.lib.dic_rlt
+  obj_library = resulting_model.lib.dic_obj
 
   # Build the library
   lib_file = _library(json_model)
@@ -59,10 +62,10 @@ def load(file):
     # Implement the loading of the library: first the relations, then the objects
     if "relations" in json_lib:
       for relation_class, relation in json_lib["relations"]:
-        rlt_library[relation_class] = parse_relation(relation, lib=True)
+        rlt_library[relation_class] = parse_relation(relation, resulting_model.lib, is_lib=True)
     if "objects" in json_lib:
       for obj_class, object in json_lib["objects"]:
-        obj_library[obj_class] = parse_object(object, obj_library, rlt_library)
+        obj_library[obj_class] = parse_object(object, resulting_model.lib, is_lib=True)
   
   json_obj = load_json(path)
   resulting_model.obj = parse_object(obj, resulting_model)

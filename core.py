@@ -142,7 +142,7 @@ class Relation:
     result["properties"] = self.properties
     return result
 
-def parse_object(obj, library):
+def parse_object(obj, libraryn, is_lib=False):
   """Parse a json object and return the Rauzy object
 
   obj must be a dictionary"""
@@ -169,7 +169,7 @@ def parse_object(obj, library):
     # check that value is a string
     object.properties[name] = value
 
-def parse_relation(rlt, lib = False):
+def parse_relation(rlt, library, is_lib=False):
   """Parse a json object representing a Rauzy relation and returns the
   corresponding Rauzy relation"""
   nature = _nature(rlt)
@@ -177,11 +177,11 @@ def parse_relation(rlt, lib = False):
     raise Exception("It is not a relation")
   extends = _extends(rlt)
   if extends is not None:
-    relation = _instanciate_rlt(extends)
+    relation = library.instanciate_rlt(extends)
   else:
     relation = Relation()
     # If it is a relation of the library, there is no from and to sets
-    if not lib:
+    if is_lib:
       fromSet = _fromSet(rlt)
       for name, contained_obj in fromSet:
         relation.fromSet[name] = parse_object(contained_obj)
