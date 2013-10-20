@@ -202,4 +202,3 @@ class Library:
             graph.add_dependency(key, contained_obj.extends)
 
     return graph.build()
-
