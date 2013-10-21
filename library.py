@@ -3,7 +3,7 @@ import json, collections, core
 # - Ensure that this graph has no cycle
 # - List the objects in a correct order according to the decendency chain
 # - Do a loading and saving function
-#from typechecker import *
+from typechecker import *
 
 
 class Dependency:
@@ -106,11 +106,28 @@ class Library:
     self.dic_rlt = {}
 
   # TODO:
-  # add_obj_class(self, name, obj)
-  # add_rlt_class(self, name, rlt)
-  # rm_obj_class(self, name)
-  # rm_rlt_class(self, name)
-
+  # done? add_obj_class(self, name, obj) 
+  # done? add_rlt_class(self, name, rlt)
+  # done? rm_obj_class(self, name)
+  # done? rm_rlt_class(self, name)
+  
+  # rename_obj_class(self, current_name, new_name)
+  # rename_rlt_class(self, current_name, new_name)
+  
+  # question: error with the @typecheck?
+  
+  def add_obj_class(self, name, obj):
+    self.dic_obj[name] = obj
+  
+  def add_rlt_class(self, name, rlt):
+    self.dic_rlt[name] = rlt
+    
+  def rm_obj_class(self, name):
+    del self.dic_obj[name]
+  
+  def rm_rlt_class(self, name):
+    del self.dic_rlt[name]
+  
   def _get_dict(self):
     result = collections.OrderedDict()
     result["nature"] = "library"

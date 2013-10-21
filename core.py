@@ -99,6 +99,10 @@ class Object:
     if not isinstance(obj, Object):
       raise TypeError(_function_name() + " second argument must be an Object")
     self.objects[name] = obj
+    
+  #TODO: do a decorator for @FirstArgumentIsStr
+  def remove_object(self, name):
+    del self.objects[name]
 
   def add_relation(self, name, relation):
     ##TODO: illegal call if extends is not None
@@ -109,6 +113,10 @@ class Object:
     if not isinstance(obj, Relation):
       raise TypeError(_function_name() + " second argument must be a Relation")
     self.relations[name] = relation
+
+  #TODO: do a decorator for @FirstArgumentIsStr
+  def remove_relation(self, name):
+    del self.relations[name]
 
   def add_property(self, key, value):
     if not isinstance(key, str):
@@ -121,8 +129,8 @@ class Object:
   
   #TODO: do a decorator for @FirstArgumentIsStr
   def remove_property(self, key):
-    #TODO : find the correct grammar
-    del self.properties.key
+    #TODO : done? find the correct grammar
+    del self.properties[key]
 
 
 class Relation:
@@ -203,3 +211,19 @@ def load_json(file, debug = False):
     pprint(data)
   json_data.close()
   return data
+
+#test ground
+if __name__ == '__main__':
+  car = Object()
+  wheel = Object()
+  contains = Relation()
+  car.add_object("wheel1", wheel)
+  car.add_object("wheel2", wheel)
+  car.add_property("size", "big")
+  car.add_property("color", "blue")
+  print(car)
+  
+  car.remove_object("wheel1")
+  car.remove_property("size")
+  car.remove_property("color")
+  print(car)
