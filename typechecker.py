@@ -65,7 +65,7 @@ __all__ = [
 
 # decorators
 
-"typecheck", "typecheck_with_exceptions",
+"typecheck", "debug_typecheck", "typecheck_with_exceptions",
 
 # check predicates
 
@@ -365,6 +365,12 @@ def typecheck(method, *, input_parameter_error = InputParameterError,
 
     return typecheck_invocation_proxy
 
+def debug_typecheck(method, *, input_parameter_error = InputParameterError,
+                         return_value_error = ReturnValueError):
+    if not __debug__:
+        return method
+    return typecheck(method, input_parameter_error = InputParameterError, 
+                         return_value_error = ReturnValueError)
 ################################################################################
 
 _exception_class = lambda t: isinstance(t, type) and issubclass(t, Exception)

@@ -11,7 +11,7 @@ class Dependency:
 
   depends_on is the set of the names of the elements that are needed for this element.
   used_by is the set of names of the elements that depends on the current element."""
-  @typecheck
+  @debug_typecheck
   def __init__(self, name: str, element):
     self.name = name
     self.element = element
@@ -40,23 +40,23 @@ class Dependency_graph:
   def __init__(self):
     self.graph = {}
 
-  @typecheck
+  @debug_typecheck
   def add_class(self, name: str, dep: Dependency):
     if name in self.graph:
       raise Exception(name + " is already present as a class")
     self.graph[name] = dep
 
-  @typecheck
+  @debug_typecheck
   def remove_class(self, name: str):
     del graph[name]
 
-  @typecheck
+  @debug_typecheck
   def add_dependency(self, name1: str, name2: str):
     """Stores that name1 is dependent of name2"""
     self.graph[name1].depend_on.add(name2)
     self.graph[name2].used_by.add(name1)
 
-  @typecheck
+  @debug_typecheck
   def remove_dependencies(self, name: str, ordered_dict: (collections.OrderedDict)):
     """"Removes the dependencies on the element named name
 
@@ -72,7 +72,7 @@ class Dependency_graph:
         del self.graph[other_element.name]
         self.remove_dependencies(other_element.name, ordered_dict)
 
-  @typecheck
+  @debug_typecheck
   def build(self) -> (collections.OrderedDict):
     """Returns an ordered dictionnary of the elements in a valid order
 
@@ -147,22 +147,22 @@ class Library:
 
     return json.dumps(self._get_dict(), cls=ComplexEncoder, indent=1)
 
-  @typecheck
+  @debug_typecheck
   def save(self, lib_path: str):
     library_file = open(lib_path, mode='w')
     library_file.write(str(self))
 
-  @typecheck
+  @debug_typecheck
   def instanciate_obj(self, class_name: str):
     """Returns an instance of class_name present in library"""
     return deepcopy(dic_obj[class_name])
 
-  @typecheck
+  @debug_typecheck
   def instanciate_rlt(self, name: str):
     """Returns an instance of class_name present in library"""
     return deepcopy(dic_rlt[class_name])
 
-  @typecheck
+  @debug_typecheck
   def _build_rlt(self) -> (collections.OrderedDict):
     """Returns a valid list of (class_name, class_relation)
 
@@ -180,7 +180,7 @@ class Library:
 
     return graph.build()
 
-  @typecheck
+  @debug_typecheck
   def _build_obj(self) -> (collections.OrderedDict):
     """Returns a valid list of (class_name, class_object)
 
