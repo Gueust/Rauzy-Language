@@ -71,7 +71,8 @@ class Object:
   def _get_dict(self):
     result = {}
     result["nature"] = "object"
-    result["extends"] = self.extends
+    if self.extends is not None:
+      result["extends"] = self.extends
     result["objects"] = {}
     for key, value in self.objects.items():
       result["objects"][key] = value._get_dict()
@@ -81,16 +82,13 @@ class Object:
     result["properties"] = self.properties
     return result
 
-  def add_object(self, name, obj):
+  @typecheck
+  def add_object(self, name: str, obj: Object):
     if self.extends is not None:
       #TODO: modify the type of the error
       raise TypeError("Illegal call of " + _function_name() + " on an objects extending " + str(self.extends))
-    if not isinstance(name, str):
-      raise TypeError(_function_name() + " first argument must be a string")
     if name == "":
       raise TypeError(_function_name() + " first argument must be a non empty string")
-    if not isinstance(obj, Object):
-      raise TypeError(_function_name() + " second argument must be an Object")
     self.objects[name] = obj
     
   @typecheck
@@ -100,12 +98,8 @@ class Object:
   @typecheck
   def add_relation(self, name: str, relation: Relation):
     ##TODO: illegal call if extends is not None
-    if not isinstance(name, str):
-      raise TypeError(_function_name() + " first argument must be a string")
     if name == "":
       raise TypeError(_function_name() + " first argument must be a non empty string")
-    if not isinstance(obj, Relation):
-      raise TypeError(_function_name() + " second argument must be a Relation")
     self.relations[name] = relation
 
   @typecheck
