@@ -4,15 +4,15 @@ from pprint import pprint
 from copy import deepcopy
 
 # Import user modules
-
-
+from typechecker import *
 
 import inspect
 def _function_name():
   """Returns the name of the function that calls this one"""
   return inspect.stack()[1][3]
 
-def _get_value(obj, key):
+@debug_typecheck
+def _get_value(obj, key: str):
   """Returns the value associated to key in obj.
   
   Obj is supposed to be a dictionnary.
@@ -52,6 +52,9 @@ def _directional(obj):
 def _library(obj):
   return _get_value(obj, "library")
 
+# Used to define Relation for the type checking. It will be overridden latter.
+class Relation:
+  pass
 
 class Object:
   """Abstract Rauzy object"""
@@ -64,16 +67,6 @@ class Object:
   #TODO: look at the difference between __str__ and __repr__
   def __repr__(self):
     return json.dumps(self._get_dict(), indent=1)
-
-#  if self.extends is None:
-#      ext = "null"
-#    else:
-#      ext = '"'+self.extends.__str__()+'"'
-#    return     '{ "nature": "object", \n' + \
-#           '"extends": ' + json.dumps(self.extends) + ", \n" + \
-#           '"objects": ' + json.dumps(self.objects) + ", \n" + \
-#           '"relations": ' + json.dumps(self.relations) + ", \n" + \
-#           '"properties": ' + json.dumps(self.properties) + "} \n"
 
   def _get_dict(self):
     result = {}
@@ -100,11 +93,12 @@ class Object:
       raise TypeError(_function_name() + " second argument must be an Object")
     self.objects[name] = obj
     
-  #TODO: do a decorator for @FirstArgumentIsStr
-  def remove_object(self, name):
+  @typecheck
+  def remove_object(self, name: str):
     del self.objects[name]
 
-  def add_relation(self, name, relation):
+  @typecheck
+  def add_relation(self, name: str, relation: Relation):
     ##TODO: illegal call if extends is not None
     if not isinstance(name, str):
       raise TypeError(_function_name() + " first argument must be a string")
@@ -114,11 +108,12 @@ class Object:
       raise TypeError(_function_name() + " second argument must be a Relation")
     self.relations[name] = relation
 
-  #TODO: do a decorator for @FirstArgumentIsStr
-  def remove_relation(self, name):
+  @typecheck
+  def remove_relation(self, name: str):
     del self.relations[name]
 
-  def add_property(self, key, value):
+  @typecheck
+  def add_property(self, key: str, value: str):
     if not isinstance(key, str):
       raise TypeError(_function_name() + " first argument must be a string")
     if key == "":
@@ -127,11 +122,11 @@ class Object:
       raise TypeError(_function_name() + " second argument must be a string")
     self.properties[key] = value
   
-  #TODO: do a decorator for @FirstArgumentIsStr
-  def remove_property(self, key):
-    #TODO : done? find the correct grammar
+  @typecheck
+  def remove_property(self, key: str):
+    if key == "":
+      raise TypeError(_function_name() + " first argument must be a non empty string")
     del self.properties[key]
-
 
 class Relation:
   """Abstract Rauzy relation"""
@@ -141,7 +136,19 @@ class Relation:
     self.toSet = {}
     self.directional = None
     self.properties = {}
-    
+
+  @staticmethod
+  def new(json_rlt):
+    """Returns a relation representation of the json relation """
+    rlt = Relation()
+    rlt.extends = _extends(json_rlt)
+    rlt.fromSet = _fromSet(json_rlt)
+    rlt.toSet = _toSet(json_rlt)
+    rlt.directional = _directional(json_rlt)
+    rlt.properties = _properties(json_rlt)
+
+    return rlt
+
   def _get_dict(self):
     result = {}
     result["nature"] = "relation"
@@ -203,7 +210,8 @@ def parse_relation(rlt, library, is_lib=False):
     #TODO: check that value is a string
     relation.properties[name] = value
 
-def load_json(file, debug = False):
+@typecheck
+def load_json(file: str, debug = False):
   """Open a file and parse it as json"""
   json_data = open(file)
   data = json.load(json_data)
