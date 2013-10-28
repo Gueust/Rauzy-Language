@@ -128,6 +128,7 @@ class Object:
       raise TypeError(_function_name() + " first argument must be a non empty string")
     del self.properties[key]
 
+# TODO: consider in the fromSet and toSet the name: rauzy obj linked
 class Relation:
   """Abstract Rauzy relation"""
   def __init__(self):
@@ -148,6 +149,27 @@ class Relation:
     rlt.properties = _properties(json_rlt)
 
     return rlt
+
+  def __repr__(self):
+    return json.dumps(self._get_dict(), indent=1)
+
+  def _get_dict(self):
+    result = {}
+    result["nature"] = "relation"
+    result["extends"] = self.extends
+    result["from"] = {}
+    for key, value in self.fromSet.items():
+      result["from"][key] = value._get_dict()
+    result["to"] = {}
+    for key, value in self.toSet.items():
+      result["to"][key] = value._get_dict()
+    result["directional"] = self.directional
+    result["properties"] = self.properties
+    return result
+
+  @typecheck
+  def add_property(self, key: str, value: str):
+    self.properties[key] = value
 
   def _get_dict(self):
     result = {}
