@@ -83,12 +83,14 @@ class Object:
     return result
 
   @typecheck
-  def add_object(self, name: str, obj: Object):
+  def add_object(self, name: str, obj):
     if self.extends is not None:
       #TODO: modify the type of the error
       raise TypeError("Illegal call of " + _function_name() + " on an objects extending " + str(self.extends))
     if name == "":
       raise TypeError(_function_name() + " first argument must be a non empty string")
+    if not isinstance(obj, Object):
+      raise TypeError(_function_name() + " second argument must be an Object")
     self.objects[name] = obj
     
   @typecheck
