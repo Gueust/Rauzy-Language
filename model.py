@@ -8,7 +8,7 @@ class Model:
     self.obj = None
     self.model_name = None
 
-  def save(self):
+  def save(self, indentation=1):
     """Saves the model into an object file and a library file
 
     The object must be non empty (i.e. not None).
@@ -28,8 +28,8 @@ class Model:
     json_obj = self.obj._get_dict()
     # We add the library parameter in the root object
     json_obj["library"] = self.lib_path
-    # We save the json representation in the file
-    obj_file.write(json.dumps(json_obj, indent=1))
+    # We save the json representation into the file
+    obj_file.write(json.dumps(json_obj, indent=indentation))
 
     if self.lib is not None and self.lib_path is None:
       #TODO: make a default name for it
@@ -59,6 +59,7 @@ def load(file):
     # We load the library using ordered dictionaries
     json_lib = json.load(location, object_pairs_hook=collections.OrderedDict())
     # Implement the loading of the library: first the relations, then the objects
+    #TODO : modify this part in order to load any library
     if "relations" in json_lib:
       for relation_class, relation in json_lib["relations"]:
         rlt_library[relation_class] = parse_relation(relation, resulting_model.lib, is_lib=True)
@@ -72,7 +73,8 @@ def load(file):
 
   return resulting_model
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+  print("Testing model module")
   car = core.Object()
   wheel = core.Object()
   car.add_object("wheel1", wheel)
