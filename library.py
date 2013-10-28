@@ -1,8 +1,4 @@
 import json, collections, core
-# - Build a dependency graph in addition to the dictionaries for objects.
-# - Ensure that this graph has no cycle
-# - List the objects in a correct order according to the decendency chain
-# - Do a loading and saving function
 from typechecker import *
 
 
@@ -106,15 +102,8 @@ class Library:
     self.dic_rlt = {}
 
   # TODO:
-  # done? add_obj_class(self, name, obj) 
-  # done? add_rlt_class(self, name, rlt)
-  # done? rm_obj_class(self, name)
-  # done? rm_rlt_class(self, name)
-  
   # rename_obj_class(self, current_name, new_name)
   # rename_rlt_class(self, current_name, new_name)
-  
-  # question: error with the @typecheck?
   
   @typecheck
   def add_obj_class(self, name: str, obj: (core.Object) ):
@@ -174,11 +163,11 @@ class Library:
     The list of pair is implemented using an ordered dictionnary."""
     graph = Dependency_graph()
     # We add all the relations in the graph
-    for key, rlt in self.dic_rlt:
+    for key, rlt in self.dic_rlt.items():
       graph.add_class(key, Dependency(key, rlt))
 
     # We add the dependencies between the relations
-    for key, rlt in self.dic_rlt:
+    for key, rlt in self.dic_rlt.items():
       if rlt.extends is not None:
         graph.add_dependency(key, rlt.extends)
 
