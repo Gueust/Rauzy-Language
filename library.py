@@ -116,16 +116,20 @@ class Library:
   
   # question: error with the @typecheck?
   
-  def add_obj_class(self, name, obj):
+  @typecheck
+  def add_obj_class(self, name: str, obj: (core.Object) ):
     self.dic_obj[name] = obj
   
-  def add_rlt_class(self, name, rlt):
+  @typecheck
+  def add_rlt_class(self, name: str, rlt: (core.Relation) ):
     self.dic_rlt[name] = rlt
-    
-  def rm_obj_class(self, name):
+
+  @typecheck
+  def rm_obj_class(self, name: str):
     del self.dic_obj[name]
   
-  def rm_rlt_class(self, name):
+  @typecheck
+  def rm_rlt_class(self, name: str):
     del self.dic_rlt[name]
   
   def _get_dict(self):
@@ -147,17 +151,17 @@ class Library:
 
     return json.dumps(self._get_dict(), cls=ComplexEncoder, indent=1)
 
-  @debug_typecheck
+  @typecheck
   def save(self, lib_path: str):
     library_file = open(lib_path, mode='w')
     library_file.write(str(self))
 
-  @debug_typecheck
+  @typecheck
   def instanciate_obj(self, class_name: str):
     """Returns an instance of class_name present in library"""
     return deepcopy(dic_obj[class_name])
 
-  @debug_typecheck
+  @typecheck
   def instanciate_rlt(self, name: str):
     """Returns an instance of class_name present in library"""
     return deepcopy(dic_rlt[class_name])
