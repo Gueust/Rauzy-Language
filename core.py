@@ -1,5 +1,5 @@
 # Import built-in modules
-import json
+import json, collections
 from pprint import pprint
 from copy import deepcopy
 
@@ -69,7 +69,7 @@ class Object:
     return json.dumps(self._get_dict(), indent=1)
 
   def _get_dict(self):
-    result = {}
+    result = collections.OrderedDict()
     result["nature"] = "object"
     if self.extends is not None:
       result["extends"] = self.extends
@@ -150,9 +150,10 @@ class Relation:
     return json.dumps(self._get_dict(), indent=1)
 
   def _get_dict(self):
-    result = {}
+    result = collections.OrderedDict()
     result["nature"] = "relation"
-    result["extends"] = self.extends
+    if self.extends is not None:
+      result["extends"] = self.extends
     result["from"] = {}
     for key, value in self.fromSet.items():
       result["from"][key] = value._get_dict()
@@ -166,14 +167,6 @@ class Relation:
   @typecheck
   def add_property(self, key: str, value: str):
     self.properties[key] = value
-
-  def _get_dict(self):
-    result = {}
-    result["nature"] = "relation"
-    result["extends"] = self.extends
-    #TODO: do the rest
-    result["properties"] = self.properties
-    return result
 
 def parse_object(obj, libraryn, is_lib=False):
   """Parse a json object and return the Rauzy object
@@ -239,7 +232,8 @@ def load_json(file: str, debug = False):
   return data
 
 #test ground
-if __name__ == '__main__':
+if __name__ == "__main__":
+  print("Testing library module")
   car = Object()
   wheel = Object()
   contains = Relation()
