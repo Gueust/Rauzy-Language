@@ -121,6 +121,12 @@ class Library:
   def rm_rlt_class(self, name: str):
     del self.dic_rlt[name]
   
+  def get_obj(self, name: str):
+    return self.dic_obj[name]
+      
+  def get_rlt(self, name: str):
+    return self.dic_rlt[name]
+  
   def _get_dict(self):
     result = collections.OrderedDict()
     result["nature"] = "library"
