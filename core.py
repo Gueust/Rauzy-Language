@@ -123,6 +123,22 @@ class Object:
     if key == "":
       raise TypeError(_function_name() + " first argument must be a non empty string")
     del self.properties[key]
+    
+  def lookup_obj_parent(self, name: str):
+    if name in self.objects:
+      return self
+    else:
+      res = None
+      for key in self.objects.keys():
+        obj = self.objects[key]
+        if res==None and len(obj.objects)>0:
+          res = obj.lookup_obj_parent(name)
+        else:
+          pass
+      return res
+
+  def lookup_obj(self, name: str):
+    return self.lookup_obj_parent(name).objects[name]
 
 # TODO: consider in the fromSet and toSet the name: rauzy obj linked
 class Relation:
@@ -236,12 +252,20 @@ if __name__ == "__main__":
   print("Testing library module")
   car = Object()
   wheel = Object()
+  tire = Object()
+  bolt = Object()
   contains = Relation()
   car.add_object("wheel1", wheel)
   car.add_object("wheel2", wheel)
+  wheel.add_object("tire1", tire)
+  wheel.add_object("bolt1", bolt)
+  wheel.add_object("bolt2", bolt)
   car.add_property("size", "big")
   car.add_property("color", "blue")
-  print(car)
+  bolt.add_property("material", "iron")
+  print(car.lookup_obj_parent("bolt1"))
+  print(car.lookup_obj("bolt1"))
+  
   
   car.remove_object("wheel1")
   car.remove_property("size")
