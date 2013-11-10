@@ -71,7 +71,9 @@ class Object:
     if ext is None:
       obj = Object()
     else:
-      obj = library.instanciate_obj(ext)
+      obj = Object()
+      obj.extends = ext
+      # obj = library.instanciate_obj(ext)
 
       list_objects = _objects(json_obj)
       if list_objects is not None:
@@ -193,7 +195,9 @@ class Relation:
       if fromSet is not None:
         rlt.fromSet = fromSet
     else:
-      rlt = library.instanciate_rlt(ext)
+      rlt = Relation()
+      rlt.extends = ext
+      # rlt = library.instanciate_rlt(ext)
 
     directional = _directional(json_rlt)
     if directional is not None:
