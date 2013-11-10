@@ -1,0 +1,11 @@
+Small TODO:
+- add  rm_property, set_directional, add_from, add_to, rm_from, rm_to in core.py
+- do not print extends, toSet, fromSet, directional properties when they are empty in relations
+- do not print extends, objects, relations and properties when they are empty in objects
+
+More complex TODO:
+- do a check() function in Model that checks if everything is coherent
+
+Discuss:
+- if A has properties, and B extends A has other properties, what are the effective
+properties of B, and what are the properties really written in B.
