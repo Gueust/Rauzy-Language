@@ -152,7 +152,7 @@ class Relation:
     self.extends = None
     self.fromSet = {}
     self.toSet = {}
-    self.directional = None
+    self.directional = True
     self.properties = {}
 
   @staticmethod
@@ -188,6 +188,8 @@ class Relation:
   @typecheck
   def add_property(self, key: str, value: str):
     self.properties[key] = value
+
+  ## TODO: rm_property, set_directional, add_from, add_to, rm_from, rm_to
 
 def parse_object(obj, libraryn, is_lib=False):
   """Parse a json object and return the Rauzy object
