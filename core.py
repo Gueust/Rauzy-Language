@@ -155,21 +155,27 @@ class Object:
     if key == "":
       raise TypeError(_function_name() + " first argument must be a non empty string")
     del self.properties[key]
-    
+
+  @typecheck
   def lookup_obj_parent(self, name: str):
+    """Returns the parent of the object named name. None if not found
+
+    In case of multiple objects with the same name, it returns one parent."""
     if name in self.objects:
       return self
-    else:
-      res = None
-      for key in self.objects.keys():
-        obj = self.objects[key]
-        if res==None and len(obj.objects)>0:
-          res = obj.lookup_obj_parent(name)
-        else:
-          pass
-      return res
 
+    for key, obj in self.objects.items():
+      if len(obj.objects) > 0:
+        res = obj.lookup_obj_parent(name)
+        if res is not None:
+          return res
+    return None
+
+  @typecheck
   def lookup_obj(self, name: str):
+    """Returns the object named name. None if not found
+
+    In case of multiple objects with the same name, it returns one."""
     return self.lookup_obj_parent(name).objects[name]
 
 # TODO: consider in the fromSet and toSet the name: rauzy obj linked
