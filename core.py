@@ -64,6 +64,31 @@ class Object:
     self.relations = {}
     self.properties = {}
 
+  @staticmethod
+  def new(json_obj, library):
+    """Returns an Object representation of the json object"""
+    ext = _extends(json_obj)
+    if ext is None:
+      obj = Object()
+    else:
+      obj = library.instanciate_obj(ext)
+
+      list_objects = _objects(json_obj)
+      if list_objects is not None:
+        for name, tmp_obj in list_objects.items():
+          obj.objects[name] = Object.new(tmp_obj, library)
+
+      relations = _relations(json_obj)
+      if relations is not None:
+        for name, rlt in relations.items():
+          obj.relations[name] = Relation.new(rlt)
+
+    properties = _properties(json_obj)
+    if properties is not None:
+      obj.properties.update(properties)
+
+    return obj
+
   #TODO: look at the difference between __str__ and __repr__
   def __repr__(self):
     return json.dumps(self._get_dict(), indent=1)
@@ -84,7 +109,7 @@ class Object:
 
   @typecheck
   def set_extends(self, name: str):
-    """Set the extends field of an object"""
+    """Set the extends field of the object"""
     self.extends = name
 
   @typecheck
@@ -152,18 +177,31 @@ class Relation:
     self.extends = None
     self.fromSet = {}
     self.toSet = {}
-    self.directional = True
+    self.directional = None
     self.properties = {}
 
   @staticmethod
-  def new(json_rlt):
+  def new(json_rlt, library):
     """Returns a relation representation of the json relation """
-    rlt = Relation()
-    rlt.extends = _extends(json_rlt)
-    rlt.fromSet = _fromSet(json_rlt)
-    rlt.toSet = _toSet(json_rlt)
-    rlt.directional = _directional(json_rlt)
-    rlt.properties = _properties(json_rlt)
+    ext = _extends(json_rlt)
+    if ext is None:
+      rlt = Relation()
+      toSet = _toSet(json_rlt)
+      if toSet is not None:
+        rlt.toSet = toSet
+      fromSet = _fromSet(json_rlt)
+      if fromSet is not None:
+        rlt.fromSet = fromSet
+    else:
+      rlt = library.instanciate_rlt(ext)
+
+    directional = _directional(json_rlt)
+    if directional is not None:
+      rlt.directional = directional
+
+    properties = _properties(json_rlt)
+    if properties is not None:
+      rlt.properties.update(properties)
 
     return rlt
 
