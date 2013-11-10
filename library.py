@@ -219,3 +219,111 @@ class Library:
             graph.add_dependency(key, contained_obj.extends)
 
     return graph.build()
+
+  @debug_typecheck
+  def _load_relations(self, json_rlt_lib):
+    """Adds into the library the relation classes corresponding to the json data
+
+    The fromSet and toSet are set to empty.
+    If a relation class, its propeties replace the one of its parent"""
+    graph = Dependency_graph()
+    # We add all the relations in the graph
+    for key, rlt in json_rlt_lib.items():
+      graph.add_class(key, Dependency(key, rlt))
+
+    # We add the dependencies between the relations
+    for key, rlt in json_rlt_lib.items():
+      ext = core._extends(rlt)
+      if ext is not None:
+        graph.add_dependency(key, ext)
+
+    ordered_rlt = graph.build()
+
+    for key, rlt in ordered_rlt.items():
+      rauzy_rlt = core.Relation.new(rlt, self)
+      rauzy_rlt.fromSet = {}
+      rauzy_rlt.toSet = {}
+      self.dic_rlt[key] = rauzy_rlt
+
+  @debug_typecheck
+  def _load_objects(self, json_obj_lib):
+    graph = Dependency_graph()
+    # We add all the objects in the graph
+    for key, obj in json_obj_lib.items():
+      graph.add_class(key, Dependency(key, obj))
+
+    # We add the dependencies between the objects
+    # They come from the extends field and the extends field of the
+    # contained objects
+    for key, obj in json_obj_lib.items():
+      ext = core._extends(obj)
+      if ext is not None:
+        graph.add_dependency(key, ext)
+      contained_obj = core._objects(obj)
+      if contained_obj is not None:
+        for name, value in contained_obj.items():
+          ext = core._extends(value)
+          if ext is not None:
+            graph.add_dependency(key, ext)
+
+    ordered_obj = graph.build()
+
+    for key, obj in ordered_obj.items():
+      self.dic_obj[key] = core.Object.new(obj, self)
+
+  def load(self, json_lib):
+    """Load a library from the json data.
+
+    If information is already present in the library, the new classes will be added."""
+    if core._nature(json_lib) != "library":
+      raise Exception("This is not a valid dictionary")
+
+    ## We load relations
+    if "relations" in json_lib:
+      self._load_relations(json_lib["relations"])
+
+    # We load objects
+    if "objects" in json_lib:
+      self._load_objects(json_lib["objects"])
+
+if __name__ == "__main__":
+  print("Testing library module")
+  rlt1 = core.Relation()
+  rlt1.set_directional(True);
+  rlt1.add_property("Importance", 'High')
+  ## print("Relation", rlt1)
+  lib = Library()
+  lib.add_rlt_class("Depends On", rlt1)
+  ## print("Lib", lib)
+  rlt2 = core.Relation.new("Depends On", lib)
+  rlt2.add_property("Mutual", "True")
+  rlt2.set_directional(False)
+  rlt2.set_extends("Depends On")
+  lib.add_rlt_class("Mutual dependency", rlt2)
+  # We put the dependent relation at the beginning
+  del lib.dic_rlt["Depends On"]
+  lib.add_rlt_class("Depends On", rlt1)
+
+  obj = core.Object()
+  obj.add_property("Nature", "Evil")
+
+  obj2 = core.Object()
+  obj2.set_extends("Human")
+  obj2.add_property("Nature", "Good")
+
+  lib.add_obj_class("Human", obj)
+  lib.add_obj_class("SuperHero", obj2)
+  print("Library", lib)
+
+  #instance = lib.instanciate_obj("Class One")
+  #print("Instance of the class 'Class One'", instance)
+  #obj.add_property("Added", "Option")
+  #print("Modification of the parent object", obj)
+  #print("The instanciation is not modified", instance)
+  #instance.add_property("Test", "42")
+  #print("Modification of the instance", instance)
+  #print("The object is not modified", obj)
+
+  new_lib = Library()
+  new_lib.load(json.loads(str(lib)))
+  print("Loaded library from current lib", new_lib)
