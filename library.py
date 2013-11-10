@@ -49,7 +49,7 @@ class Dependency_graph:
   @debug_typecheck
   def add_dependency(self, name1: str, name2: str):
     """Stores that name1 is dependent of name2"""
-    self.graph[name1].depend_on.add(name2)
+    self.graph[name1].depends_on.add(name2)
     self.graph[name2].used_by.add(name1)
 
   @debug_typecheck
@@ -57,11 +57,14 @@ class Dependency_graph:
     """"Removes the dependencies on the element named name
 
     It adds in ordered_dict the elements, the last dependency of which is name."""
+    if name not in self.graph:
+      return
+
     el = self.graph[name]
     if len(el.used_by) == 0:
       return
     else:
-      other_element = el.used_by.pop()
+      other_element = self.graph[el.used_by.pop()]
       other_element.depends_on.remove(el.name)
       if len(other_element.depends_on) == 0:
         ordered_dict[other_element.name] = other_element.element
@@ -160,14 +163,18 @@ class Library:
 
   @typecheck
   def instanciate_obj(self, class_name: str):
-    """Returns an instance of class_name present in library"""
+    """Returns an instance of class_name present in library
+
+    The extends field is set to the class_name and all attributes are copied"""
     res = copy.deepcopy(self.dic_obj[class_name])
     res.set_extends(class_name)
     return res
 
   @typecheck
   def instanciate_rlt(self, class_name: str):
-    """Returns an instance of class_name present in library"""
+    """Returns an instance of class_name present in library
+
+    The extends field is set to the class_name and all attributes are copied"""
     res = copy.deepcopy(self.dic_rlt[class_name])
     res.set_extends(class_name)
     return res
