@@ -1,4 +1,4 @@
-import json, collections, core
+import json, collections, core, copy
 from typechecker import *
 
 
@@ -97,6 +97,7 @@ class Dependency_graph:
 
 
 class Library:
+  """Abstraction of a library storing object and relation class"""
   def __init__(self):
     self.dic_obj = collections.OrderedDict()
     self.dic_rlt = collections.OrderedDict()
@@ -107,18 +108,22 @@ class Library:
   
   @typecheck
   def add_obj_class(self, name: str, obj: (core.Object) ):
+    """Add an object class in the library."""
     self.dic_obj[name] = obj
   
   @typecheck
   def add_rlt_class(self, name: str, rlt: (core.Relation) ):
+    """Add a relation class in the library"""
     self.dic_rlt[name] = rlt
 
   @typecheck
   def rm_obj_class(self, name: str):
+    """Remove the definition of an object class in the library"""
     del self.dic_obj[name]
   
   @typecheck
   def rm_rlt_class(self, name: str):
+    """Remove the definition of a relation class in the library"""
     del self.dic_rlt[name]
   
   def get_obj(self, name: str):
@@ -128,6 +133,7 @@ class Library:
     return self.dic_rlt[name]
   
   def _get_dict(self):
+    """Returns a dictionary representing the library"""
     result = collections.OrderedDict()
     result["nature"] = "library"
     result["objects"] = self.dic_obj
@@ -148,18 +154,23 @@ class Library:
 
   @typecheck
   def save(self, lib_path: str):
+    """Save the library as a json string into a file"""
     library_file = open(lib_path, mode='w')
     library_file.write(str(self))
 
   @typecheck
   def instanciate_obj(self, class_name: str):
     """Returns an instance of class_name present in library"""
-    return deepcopy(dic_obj[class_name])
+    res = copy.deepcopy(self.dic_obj[class_name])
+    res.set_extends(class_name)
+    return res
 
   @typecheck
-  def instanciate_rlt(self, name: str):
+  def instanciate_rlt(self, class_name: str):
     """Returns an instance of class_name present in library"""
-    return deepcopy(dic_rlt[class_name])
+    res = copy.deepcopy(self.dic_rlt[class_name])
+    res.set_extends(class_name)
+    return res
 
   @debug_typecheck
   def _build_rlt(self) -> (collections.OrderedDict):

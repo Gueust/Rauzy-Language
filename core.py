@@ -83,6 +83,11 @@ class Object:
     return result
 
   @typecheck
+  def set_extends(self, name: str):
+    """Set the extends field of an object"""
+    self.extends = name
+
+  @typecheck
   def add_object(self, name: str, obj):
     if self.extends is not None:
       #TODO: modify the type of the error
