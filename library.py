@@ -98,8 +98,8 @@ class Dependency_graph:
 
 class Library:
   def __init__(self):
-    self.dic_obj = {}
-    self.dic_rlt = {}
+    self.dic_obj = collections.OrderedDict()
+    self.dic_rlt = collections.OrderedDict()
 
   # TODO:
   # rename_obj_class(self, current_name, new_name)
@@ -130,8 +130,8 @@ class Library:
   def _get_dict(self):
     result = collections.OrderedDict()
     result["nature"] = "library"
-    result["objects"] = self._build_obj()
-    result["relations"] = self._build_rlt()
+    result["objects"] = self.dic_obj
+    result["relations"] = self.dic_rlt
     return result
 
   def __repr__(self):
