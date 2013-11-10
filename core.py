@@ -227,6 +227,14 @@ class Relation:
   def add_property(self, key: str, value: str):
     self.properties[key] = value
 
+  @typecheck
+  def set_directional(self, value: bool):
+    self.directional = value
+
+  @typecheck
+  def set_extends(self, name: str):
+    """Set the extends field of the relation"""
+    self.extends = name
   ## TODO: rm_property, set_directional, add_from, add_to, rm_from, rm_to
 
 def parse_object(obj, libraryn, is_lib=False):
