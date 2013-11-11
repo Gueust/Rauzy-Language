@@ -5,6 +5,8 @@ Small TODO:
 
 More complex TODO:
 - do a check() function in Model that checks if everything is coherent
+- get_all_attr function that gives all the attributes of a relation or an object
+that extends others.
 
 Discuss:
 - if A has properties, and B extends A has other properties, what are the effective
