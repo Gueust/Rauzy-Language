@@ -245,7 +245,34 @@ class Relation:
   def set_extends(self, name: str):
     """Set the extends field of the relation"""
     self.extends = name
+    
   ## TODO: rm_property, set_directional, add_from, add_to, rm_from, rm_to
+  
+  @typecheck
+  def rm_property(self, key: str):
+      if key == "":
+        raise TypeError(_function_name() + " first argument must be a non empty string")
+      del self.properties[key]
+  
+  @typecheck
+  def add_from(self, name:str, obj):
+      self.fromSet[name] = obj
+  
+  @typecheck
+  def add_to(self, name:str, obj):
+      self.toSet[name] = obj
+  
+  @typecheck
+  def rm_from(self, name:str):
+      if name == "":
+        raise TypeError(_function_name() + " first argument must be a non empty string")
+      del self.fromSet[name]
+  
+  @typecheck
+  def rm_to(self, name:str):
+      if name == "":
+        raise TypeError(_function_name() + " first argument must be a non empty string")
+      del self.toSet[name]
 
 def parse_object(obj, libraryn, is_lib=False):
   """Parse a json object and return the Rauzy object
