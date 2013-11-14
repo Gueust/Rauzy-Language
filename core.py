@@ -131,14 +131,18 @@ class Object:
 
   @typecheck
   def add_relation(self, name: str, relation: Relation):
-    ##TODO: illegal call if extends is not None
+    if self.extends is not None:
+      raise TypeError("Impossible to add a relation to an object that extends an other")
     if name == "":
       raise TypeError(_function_name() + " first argument must be a non empty string")
     self.relations[name] = relation
+    relation.parent = self
 
   @typecheck
   def remove_relation(self, name: str):
-    del self.relations[name]
+    if name in relations:
+      relations[name].parent = None
+      del self.relations[name]
 
   @typecheck
   def add_property(self, key: str, value: str):
@@ -182,6 +186,7 @@ class Object:
 class Relation:
   """Abstract Rauzy relation"""
   def __init__(self):
+    self.parent = None
     self.extends = None
     self.fromSet = {}
     self.toSet = {}
@@ -223,12 +228,12 @@ class Relation:
     result["nature"] = "relation"
     if self.extends is not None:
       result["extends"] = self.extends
-    result["from"] = {}
+    result["from"] = []
     for key, value in self.fromSet.items():
-      result["from"][key] = value._get_dict()
+      result["from"].append(key)
     result["to"] = {}
     for key, value in self.toSet.items():
-      result["to"][key] = value._get_dict()
+      result["to"].append(key)
     result["directional"] = self.directional
     result["properties"] = self.properties
     return result
@@ -246,33 +251,46 @@ class Relation:
     """Set the extends field of the relation"""
     self.extends = name
     
-  ## TODO: rm_property, set_directional, add_from, add_to, rm_from, rm_to
-  
   @typecheck
   def rm_property(self, key: str):
-      if key == "":
-        raise TypeError(_function_name() + " first argument must be a non empty string")
-      del self.properties[key]
+    """Remove a property using its key. The key must be a non empty string"""
+    if key == "":
+      raise TypeError(_function_name() + " first argument must be a non empty string")
+    del self.properties[key]
   
   @typecheck
-  def add_from(self, name:str, obj):
-      self.fromSet[name] = obj
+  def add_from(self, name: str):
+    """Add to the origin of a relation an object by its name"""
+    obj = self.parent.lookup_obj(name)
+    if obj is None:
+      raise TypeError("The object named " + str + " has not been found.")
+    self.fromSet[name] = obj
   
   @typecheck
-  def add_to(self, name:str, obj):
-      self.toSet[name] = obj
+  def add_to(self, name: str):
+    """Add to the destination of a relation an object by its name"""
+    obj = self.parent.lookup_obj(name)
+    if obj is None:
+      raise TypeError("The object named " + str + " has not been found.")
+    self.toSet[name] = obj
   
   @typecheck
-  def rm_from(self, name:str):
-      if name == "":
-        raise TypeError(_function_name() + " first argument must be a non empty string")
-      del self.fromSet[name]
+  def rm_from(self, name: str):
+    """Remove an object in the destination set of a relation by its name
+
+    The name of the object must be a non empty string."""
+    if name == "":
+      raise TypeError(_function_name() + " first argument must be a non empty string")
+    del self.fromSet[name]
   
   @typecheck
-  def rm_to(self, name:str):
-      if name == "":
-        raise TypeError(_function_name() + " first argument must be a non empty string")
-      del self.toSet[name]
+  def rm_to(self, name: str):
+    """Remove an object in the origin set of a relation by its name
+
+    The name of the object must be a non empty string."""
+    if name == "":
+      raise TypeError(_function_name() + " first argument must be a non empty string")
+    del self.toSet[name]
 
 def parse_object(obj, libraryn, is_lib=False):
   """Parse a json object and return the Rauzy object
