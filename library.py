@@ -180,47 +180,6 @@ class Library:
     return res
 
   @debug_typecheck
-  def _build_rlt(self) -> (collections.OrderedDict):
-    """Returns a valid list of (class_name, class_relation)
-
-    Returns a list of pair (class_name, element) in an order valid with the dependency chain.
-    The list of pair is implemented using an ordered dictionnary."""
-    graph = Dependency_graph()
-    # We add all the relations in the graph
-    for key, rlt in self.dic_rlt.items():
-      graph.add_class(key, Dependency(key, rlt))
-
-    # We add the dependencies between the relations
-    for key, rlt in self.dic_rlt.items():
-      if rlt.extends is not None:
-        graph.add_dependency(key, rlt.extends)
-
-    return graph.build()
-
-  @debug_typecheck
-  def _build_obj(self) -> (collections.OrderedDict):
-    """Returns a valid list of (class_name, class_object)
-
-    Returns a list of pair (class_name, element) in an order valid with the dependency chain.
-    The list of pair is implemented using an ordered dictionnary."""
-    graph = Dependency_graph()
-    # We add all the objects in the graph
-    for key, obj in self.dic_obj.items():
-      graph.add_class(key, Dependency(key, obj))
-
-    # We add the dependencies between the objects
-    for key, obj in self.dic_obj.items():
-      if obj.extends is not None:
-        # We take into account the inheritance system
-        graph.add_dependency(key, obj.extends)
-        # We add all dependencies due to the objects list
-        for contained_obj in obj.objects.values():
-          if contained_obj.extends is not None:
-            graph.add_dependency(key, contained_obj.extends)
-
-    return graph.build()
-
-  @debug_typecheck
   def _load_relations(self, json_rlt_lib):
     """Adds into the library the relation classes corresponding to the json data
 
