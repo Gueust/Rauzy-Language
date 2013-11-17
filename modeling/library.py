@@ -84,7 +84,7 @@ class Dependency_graph:
 
   @debug_typecheck
   def remove_dependencies(self, name: str, ordered_dict: (collections.OrderedDict)):
-    """"remove_dependencies(name, ordered_dict)
+    """remove_dependencies(name, ordered_dict)
     Remove the dependencies on the element named name.
 
     It adds in ordered_dict the elements, the last dependency of which is name."""
