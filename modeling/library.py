@@ -1,15 +1,36 @@
+r"""
+The library module manages the library of a model. It allows to load, save and
+modify a library. In particular, loading a library needs to solve the
+dependencies due to the inheritance between objetcs or relations.
+
+Example of the initialization and the addition of an object class::
+
+  >>> from modeling.library import *
+  >>> rlt = core.Relation()
+  >>> rlt.set_directional(True);
+  >>> rlt.add_property("Importance", 'High')
+  >>> lib = Library()
+  >>> lib.add_rlt_class("Depends On", rlt)
+  >>> print(lib)
+"""
+
 import json, collections, copy
 from . import core
 from .typechecker import *
 
 
 class Dependency:
-  """Represent a node of a dependency graph
+  """Represent a node of a dependency graph.
 
-  depends_on is the set of the names of the elements that are needed for this element.
+  It is only used internally by the library class and the implementation is not detailed here."""
+
+  """depends_on is the set of the names of the elements that are needed for this element.
   used_by is the set of names of the elements that depends on the current element."""
   @debug_typecheck
   def __init__(self, name: str, element):
+    """__init__(name, element)
+
+    Initialise a dependency named `name` and containing `element`."""
     self.name = name
     self.element = element
     self.depends_on = set()
@@ -29,33 +50,42 @@ class Dependency:
     return result
 
   def has_no_dependency(self):
-    """Returns true if and only if depends_on is empty"""
+    """has_no_dependency()
+    Return true if and only if the node does not depend on any other node."""
+    """Return true if and only if depends_on is empty"""
     return len(self.depends_on) == 0
 
 class Dependency_graph:
-  """A dependency graph containing dependencies"""
+  """A dependency graph containing dependencies."""
   def __init__(self):
     self.graph = {}
 
   @debug_typecheck
   def add_class(self, name: str, dep: Dependency):
+    """add_class(name, dep)
+    Add the dependency `dep` with the name `name` in the graph."""
     if name in self.graph:
       raise Exception(name + " is already present as a class")
     self.graph[name] = dep
 
   @debug_typecheck
   def remove_class(self, name: str):
+    """remove_class(name)
+    Remove the dependecy attached to the name `name`."""
     del graph[name]
 
   @debug_typecheck
   def add_dependency(self, name1: str, name2: str):
-    """Stores that name1 is dependent of name2"""
+    """add_dependency(name1, name2)
+    Store that `name1` is dependent of `name2`.
+    """
     self.graph[name1].depends_on.add(name2)
     self.graph[name2].used_by.add(name1)
 
   @debug_typecheck
   def remove_dependencies(self, name: str, ordered_dict: (collections.OrderedDict)):
-    """"Removes the dependencies on the element named name
+    """"remove_dependencies(name, ordered_dict)
+    Remove the dependencies on the element named name.
 
     It adds in ordered_dict the elements, the last dependency of which is name."""
     if name not in self.graph:
@@ -74,7 +104,8 @@ class Dependency_graph:
 
   @debug_typecheck
   def build(self) -> (collections.OrderedDict):
-    """Returns an ordered dictionnary of the elements in a valid order
+    """build()
+    Return an ordered dictionnary of the elements in a valid order.
 
     The order respect the dependency chains: no element is inserted before all
     its dependencies have been inserted."""
@@ -101,7 +132,7 @@ class Dependency_graph:
 
 
 class Library:
-  """Abstraction of a library storing object and relation class"""
+  """Abstraction of a library storing object and relation classes."""
   def __init__(self):
     self.dic_obj = collections.OrderedDict()
     self.dic_rlt = collections.OrderedDict()
@@ -112,32 +143,40 @@ class Library:
   
   @typecheck
   def add_obj_class(self, name: str, obj: (core.Object) ):
-    """Add an object class in the library."""
+    """add_obj_class(name, obj)
+    Add the object class `obj' in the library with the name `name`."""
     self.dic_obj[name] = obj
   
   @typecheck
   def add_rlt_class(self, name: str, rlt: (core.Relation) ):
-    """Add a relation class in the library"""
+    """add_rlt_class(name, rlt)
+    Add the relation class `rlt` in the library" with the name `name`."""
     self.dic_rlt[name] = rlt
 
   @typecheck
   def rm_obj_class(self, name: str):
-    """Remove the definition of an object class in the library"""
+    """rm_obj_class(name)
+    Remove the definition of an object class associated to `name` in the library."""
     del self.dic_obj[name]
   
   @typecheck
   def rm_rlt_class(self, name: str):
-    """Remove the definition of a relation class in the library"""
+    """rm_rlt_class(name)
+    Remove the definition of a relation class associated to `name` in the library."""
     del self.dic_rlt[name]
   
   def get_obj(self, name: str):
+    """get_obj(name)
+    Return the object associated with `name`"""
     return self.dic_obj[name]
       
   def get_rlt(self, name: str):
+    """get_rlt(name)
+    Return the library associated with `name`"""
     return self.dic_rlt[name]
   
   def _get_dict(self):
-    """Returns a dictionary representing the library"""
+    """Return a dictionary representing the library."""
     result = collections.OrderedDict()
     result["nature"] = "library"
     result["objects"] = self.dic_obj
@@ -158,31 +197,40 @@ class Library:
 
   @typecheck
   def save(self, lib_path: str):
-    """Save the library as a json string into a file"""
+    """save(lib_path)
+    Save the library as a json string into a file with path is `lib_path`."""
     library_file = open(lib_path, mode='w')
     library_file.write(str(self))
 
   @typecheck
   def instanciate_obj(self, class_name: str):
-    """Returns an instance of class_name present in library
+    """instanciate_obj(class_name)
+    Returns an instance of `class_name` present in library.
 
     The extends field is set to the class_name and all attributes are copied"""
-    res = copy.deepcopy(self.dic_obj[class_name])
-    res.set_extends(class_name)
-    return res
+    try:
+      res = copy.deepcopy(self.dic_obj[class_name])
+      res.set_extends(class_name)
+      return res
+    except KeyError:
+      print(class_name + " does not exist in the library.")
 
   @typecheck
   def instanciate_rlt(self, class_name: str):
-    """Returns an instance of class_name present in library
+    """instanciate_rlt(class_name)
+    Return an instance of `class_name` present in library.
 
     The extends field is set to the class_name and all attributes are copied"""
-    res = copy.deepcopy(self.dic_rlt[class_name])
-    res.set_extends(class_name)
-    return res
+    try:
+      res = copy.deepcopy(self.dic_rlt[class_name])
+      res.set_extends(class_name)
+      return res
+    except KeyError:
+      print(class_name + " does not exist in the library.")
 
   @debug_typecheck
   def _load_relations(self, json_rlt_lib):
-    """Adds into the library the relation classes corresponding to the json data
+    """Add into the library the relation classes corresponding to the json data.
 
     The fromSet and toSet are set to empty.
     If a relation class, its propeties replace the one of its parent"""
@@ -232,7 +280,8 @@ class Library:
       self.dic_obj[key] = core.Object.new(obj, self)
 
   def load(self, json_lib):
-    """Load a library from the json data.
+    """load(json_lib)
+    Load a library from the json data.
 
     If information is already present in the library, the new classes will be added."""
     if core._nature(json_lib) != "library":
