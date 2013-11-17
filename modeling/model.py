@@ -1,7 +1,9 @@
-import os, json, collections, core
-from library import Library
+import os, json, collections
+from . import core
+from .library import Library
 
 class Model:
+
   def __init__(self):
     self.lib = Library()
     self.lib_path = None
@@ -9,7 +11,7 @@ class Model:
     self.model_name = None
 
   def save(self, indentation=1):
-    """Saves the model into an object file and a library file
+    """Saves the model into an object file and a library file.
 
     The object must be non empty (i.e. not None).
     The model must have a name (i.e. model_name not None).

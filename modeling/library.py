@@ -1,5 +1,6 @@
-import json, collections, core, copy
-from typechecker import *
+import json, collections, copy
+from . import core
+from .typechecker import *
 
 
 class Dependency:

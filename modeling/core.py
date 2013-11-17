@@ -4,7 +4,7 @@ from pprint import pprint
 from copy import deepcopy
 
 # Import user modules
-from typechecker import *
+from .typechecker import *
 
 import inspect
 def _function_name():
