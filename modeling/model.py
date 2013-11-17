@@ -1,5 +1,6 @@
 r"""
-A Model contains both a library and an object description using that library.
+The model module contains only the Model class which allows to load and save
+models.
 
 Loading a model from a file::
 
@@ -21,7 +22,9 @@ from .core import *
 from .library import *
 
 class Model:
-
+  """
+  A Model contains both a library and an object description using that library.
+  """
   def __init__(self):
     self.lib = Library()
     self.lib_path = None
@@ -35,12 +38,30 @@ class Model:
     self.lib_path = lib_path
 
   def set_obj_path(self, obj_path: str):
-    """Set the name of the object file in order to be saved"""
+    """Set the name of the object file in order to be saved."""
     self.model_name = obj_path
+
+  def set_obj(self, obj):
+    """Set the object of the model."""
+    self.obj = obj
+
+  def get_obj(self):
+    """Return the object of the model."""
+    return self.obj
+
+  def set_lib(self, lib):
+    """Set the library of the model."""
+    return self.lib
+
+  def get_lib(self):
+    """Return the library of the model."""
+    return self.lib
 
   @staticmethod
   def load(file):
-    """Parse a file as a json object representing a model (i.e. a root object)"""
+    """Parse a file as a json object representing a model. 
+
+    `file` must be a relative path to the model file."""
     json_data = open(file)
     json_model = json.load(json_data)
 
@@ -55,7 +76,8 @@ class Model:
         directory_path = os.path.dirname(file)
         location = open(os.path.join(directory_path, lib_file))
       except IOError as err:
-        raise IOError(format(err) + " \n The library path must be relative to the model file")
+        raise IOError(format(err) + " \n Library file not found. \
+          The library path must be relative to the model file")
 
       # We load the library using ordered dictionaries
       json_lib = json.load(location)
@@ -68,8 +90,15 @@ class Model:
     return resulting_model
 
   def save(self, indentation=1):
-    """Saves the model into an object file and a library file.
+    """Save the model into an object file and a library file.
 
+    The object must be non-empty (i.e. set_obj must have been called).
+    The path for the object must have been defined using :meth:`.set_obj_path()`.
+    The library path must be non-empty if the library has been set using set_lib.
+
+    `identation` define the indentation used for the json output. Its default value is 1.
+    """
+    """
     The object must be non empty (i.e. not None).
     The model must have a name (i.e. model_name not None).
     The library can be empty and in that case it is not saved.

@@ -9,10 +9,11 @@ modeling Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`core` Module
-------------------
 
-.. automodule:: modeling.core
+:mod:`model` Module
+-------------------
+
+.. automodule:: modeling.model
     :members:
     :undoc-members:
     :show-inheritance:
@@ -24,12 +25,11 @@ modeling Package
     :members:
     :undoc-members:
     :show-inheritance:
+ 
+:mod:`core` Module
+------------------
 
-:mod:`model` Module
--------------------
-
-.. automodule:: modeling.model
+.. automodule:: modeling.core
     :members:
     :undoc-members:
     :show-inheritance:
-
