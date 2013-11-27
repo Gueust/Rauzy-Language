@@ -246,12 +246,17 @@ class Library:
     Returns an instance of `class_name` present in library.
 
     The extends field is set to the class_name and all attributes are copied"""
-    try:
-      res = copy.deepcopy(self.dic_obj[class_name])
-      res.set_extends(class_name)
+    if class_name not in self.dic_obj:
+      raise KeyError("The object class ", class_name, " does not exist in the library.")
+
+    obj = self.dic_obj[class_name]
+    if obj.extends is None:
+      return copy.deepcopy(self.dic_obj[class_name])
+    else:
+      res = self.instanciate_obj(obj.get_extends)
+      res.set_extends(None)
+      res.properties.update(obj.properties)
       return res
-    except KeyError:
-      print(class_name + " does not exist in the library.")
 
   @typecheck
   def instanciate_rlt(self, class_name: str):
@@ -259,12 +264,18 @@ class Library:
     Return an instance of `class_name` present in library.
 
     The extends field is set to the class_name and all attributes are copied"""
-    try:
+    if class_name not in self.dic_obj:
+      raise KeyError("The relation class ", class_name, " does not exist in the library.")
+
+    rlt = self.dic_rlt[class_name]
+    if rlt.extends is None:
+      return copy.deepcopy(self.dic_rlt[class_name])
+    else:
       res = copy.deepcopy(self.dic_rlt[class_name])
       res.set_extends(class_name)
+      res.set_extends(None)
+      res.properties.update(rlt.properties)
       return res
-    except KeyError:
-      print(class_name + " does not exist in the library.")
 
   @debug_typecheck
   def _load_relations(self, json_rlt_lib):
