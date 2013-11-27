@@ -8,12 +8,12 @@ from .typechecker import *
 
 import inspect
 def _function_name():
-  """Returns the name of the function that calls this one"""
+  """Return the name of the function that calls this one."""
   return inspect.stack()[1][3]
 
 @debug_typecheck
 def _get_value(obj, key: str):
-  """Returns the value associated to key in obj.
+  """Return the value associated to key in obj.
   
   Obj is supposed to be a dictionnary.
   If the value does not exist or is empty, it returns None."""
@@ -66,7 +66,7 @@ class Object:
 
   @staticmethod
   def new(json_obj, library):
-    """Returns an Object representation of the json object"""
+    """Return an Object representation of the json object."""
     ext = _extends(json_obj)
     if ext is None:
       obj = Object()
@@ -109,13 +109,23 @@ class Object:
     result["properties"] = self.properties
     return result
 
-  @typecheck
-  def set_extends(self, name: str):
-    """Set the extends field of the object"""
-    self.extends = name
+  #@typecheck
+  def set_extends(self, value):
+    """set_extends(self, value)
+    Set the extends field of the object to `value` which is a non empty string or None."""
+    if value == "" | ( value is not None and not isinstance(value, str) ):
+      raise TypeError("The value must be a non empty string or None.")
+    self.extends = value
+
+  def get_extends(self):
+    """get_extends(self)
+    Get the value of the `extends` field."""
+    return self.extends
 
   @typecheck
   def add_object(self, name: str, obj):
+    """add_object(self, name, obj)
+    Add the object `obj` with the not empty name `name` to the current object."""
     if self.extends is not None:
       #TODO: modify the type of the error
       raise TypeError("Illegal call of " + _function_name() + " on an objects extending " + str(self.extends))
