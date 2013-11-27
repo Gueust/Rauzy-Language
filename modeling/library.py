@@ -141,6 +141,9 @@ class Library:
   def add_obj_class(self, name: str, obj: (core.Object) ):
     """add_obj_class(name, obj)
     Add the object class `obj' in the library with the name `name`."""
+    if name == "":
+      print("The object class supplied is empty. Addition impossible.")
+      return
     if name in self.dic_obj:
       print("The object class ", name, " is already present in the library.")
     else:
@@ -150,6 +153,9 @@ class Library:
   def add_rlt_class(self, name: str, rlt: (core.Relation) ):
     """add_rlt_class(name, rlt)
     Add the relation class `rlt` in the library" with the name `name`."""
+    if name == "":
+      print("The relation class supplied is empty. Addition impossible.")
+      return
     if name in self.dic_obj:
       print("The relation class ", name, " is already preset in the library.")
     else:
