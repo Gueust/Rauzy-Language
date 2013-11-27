@@ -143,7 +143,7 @@ class Library:
     Add the object class `obj' in the library with the name `name`."""
     if name in self.dic_obj:
       print("The object class ", name, " is already present in the library.")
-    else
+    else:
       self.dic_obj[name] = obj
   
   @typecheck
@@ -152,7 +152,7 @@ class Library:
     Add the relation class `rlt` in the library" with the name `name`."""
     if name in self.dic_obj:
       print("The relation class ", name, " is already preset in the library.")
-    else
+    else:
       self.dic_rlt[name] = rlt
 
   @typecheck
