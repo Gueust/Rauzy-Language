@@ -166,7 +166,37 @@ class Library:
     """rm_rlt_class(name)
     Remove the definition of a relation class associated to `name` in the library."""
     del self.dic_rlt[name]
-  
+
+  @typecheck
+  def rename_obj_class(self, current_name: str, new_name: str):
+    """rename_obj_class(self, current_name, new_name)
+    Rename an object class from `current_name` to `new_name`.
+    Both the names must be non empty and the `new_name` must not already exist."""
+    if new_name == "" | current_name == "":
+      print("It is impossible to give an empty string as a name.")
+      return
+    if new_name in self.dic_obj:
+      print("Renaming to ", new_name, " is impossible since this class already exists.")
+      return
+    obj = self.dic_obj[current_name]
+    rm_obj_class(current_name)
+    self.dic_obj[new_name] = obj
+
+  @typecheck
+  def rename_rlt_class(self, current_name: str, new_name: str):
+    """rename_rlt_class(self, current_name, new_name)
+    Rename a relation class from `current_name` to "new_name`.
+    Both the names must be non empty and the `new_name` must not already exist."""
+    if new_name == "" | current_name == "":
+      print("It is impossible to give an empty string as a name.")
+      return
+    if new_name in self.dic_rlt:
+      print("Renaming to ", new_name, " is impossible since this class already exists.")
+      return
+    rlt = self.dic_rlt[current_name]
+    rm_rlt_class(current_name)
+    self.dic_rlt[new_name] = rlt
+
   def get_obj(self, name: str):
     """get_obj(name)
     Return the object associated with `name`"""
