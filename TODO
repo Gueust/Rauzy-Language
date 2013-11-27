@@ -2,11 +2,14 @@ Small TODO:
 - add  rm_property, set_directional, add_from, add_to, rm_from, rm_to in core.py
 - do not print extends, toSet, fromSet, directional properties when they are empty in relations
 - do not print extends, objects, relations and properties when they are empty in objects
+- add a function to merge librairies
+- decide whether an error should be an exception or a print
 
 More complex TODO:
 - do a check() function in Model that checks if everything is coherent
 - get_all_attr function that gives all the attributes of a relation or an object
 that extends others.
+- check unicity of keys in the json format (redefine the read/parse function)
 
 Discuss:
 - if A has properties, and B extends A has other properties, what are the effective
