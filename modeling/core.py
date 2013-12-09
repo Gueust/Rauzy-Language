@@ -1,3 +1,18 @@
+r"""
+The core module contains the Object and Relation classes that constitute the
+abstract entities representing Rauzy objects and Rauzy relations.
+
+Example of the initialization and the addition of an object class::
+
+  >>> from modeling.library import *
+  >>> rlt = core.Relation()
+  >>> rlt.set_directional(True);
+  >>> rlt.add_property("Importance", 'High')
+  >>> lib = Library()
+  >>> lib.add_rlt_class("Depends On", rlt)
+  >>> print(lib)
+"""
+
 # Import built-in modules
 import json, collections
 from pprint import pprint
@@ -137,10 +152,13 @@ class Object:
     
   @typecheck
   def remove_object(self, name: str):
+    """remove_object(self, name)
+    Remove the object named `name`."""
     del self.objects[name]
 
   @typecheck
   def add_relation(self, name: str, relation: Relation):
+    """add_relation(self, name, relation)"""
     if self.extends is not None:
       raise TypeError("Impossible to add a relation to an object that extends an other")
     if name == "":
@@ -150,6 +168,8 @@ class Object:
 
   @typecheck
   def remove_relation(self, name: str):
+    """remove_relation(self, name)
+    Remove the relation named `name`."""
     if name in relations:
       relations[name].parent = None
       del self.relations[name]
@@ -172,7 +192,7 @@ class Object:
 
   @typecheck
   def lookup_obj_parent(self, name: str):
-    """Returns the parent of the object named name. None if not found
+    """Return the parent of the object named name. None if not found.
 
     In case of multiple objects with the same name, it returns one parent."""
     if name in self.objects:
@@ -187,7 +207,7 @@ class Object:
 
   @typecheck
   def lookup_obj(self, name: str):
-    """Returns the object named name. None if not found
+    """Return the object named name. None if not found.
 
     In case of multiple objects with the same name, it returns one."""
     return self.lookup_obj_parent(name).objects[name]
