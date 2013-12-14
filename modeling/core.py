@@ -266,7 +266,7 @@ class Object:
       for name, obj in abst.objects.items():
         res = obj.abst_obj_p(level-1)
         for key, prop in res.properties.items():
-          abst.properties[key] = prop
+          abst.properties[key + '_' + name] = prop    
       abst.objects = {}
     
     if level > 0:
@@ -488,11 +488,12 @@ if __name__ == "__main__":
   rim.add_object("bolt1", bolt)
   car.add_property("size", "big")
   car.add_property("color", "blue")
+  tire.add_property("material", "rubber")
   rim.add_property("style", "fancy")
   bolt.add_property("material", "iron")
-  print(car.abst_obj(1))
-  print("Attempt 2")
-  print(car.abst_obj_p(1))
+  print(car.abst_obj(0))
+  print("Abstraction with properties:")
+  print(car.abst_obj_p(0))
   #print(car.lookup_obj_parent("bolt1"))
   #print(car.lookup_obj("bolt1"))
   
