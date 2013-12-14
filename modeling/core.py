@@ -227,6 +227,18 @@ class Object:
 
     In case of multiple objects with the same name, it returns one."""
     return self.lookup_obj_parent(name).objects[name]
+  
+  def abst_obj(self, level: int):
+    """abst_obj(level)
+    Return the object that only includes the depth of levels specified.
+    """
+    if level <= 0:
+      self.objects = {}
+      return self
+    
+    for name, obj in self.objects.items():
+      self.objects[name] = obj.abst_obj(level-1)
+    return self
 
 # TODO: consider in the fromSet and toSet the name: rauzy obj linked
 class Relation:
@@ -430,21 +442,24 @@ if __name__ == "__main__":
   car = Object()
   wheel = Object()
   tire = Object()
+  rim = Object()
   bolt = Object()
   contains = Relation()
   car.add_object("wheel1", wheel)
   car.add_object("wheel2", wheel)
   wheel.add_object("tire1", tire)
-  wheel.add_object("bolt1", bolt)
-  wheel.add_object("bolt2", bolt)
+  wheel.add_object("rim1", rim)
+  wheel.add_object("rim2", rim)
+  rim.add_object("bolt1", bolt)
   car.add_property("size", "big")
   car.add_property("color", "blue")
   bolt.add_property("material", "iron")
-  print(car.lookup_obj_parent("bolt1"))
-  print(car.lookup_obj("bolt1"))
+  print(car.abst_obj(0))
+  #print(car.lookup_obj_parent("bolt1"))
+  #print(car.lookup_obj("bolt1"))
   
   
-  car.remove_object("wheel1")
-  car.remove_property("size")
-  car.remove_property("color")
-  print(car)
+  #car.remove_object("wheel1")
+  #car.remove_property("size")
+  #car.remove_property("color")
+  #print(car)
