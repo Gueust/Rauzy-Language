@@ -271,14 +271,18 @@ class Relation:
     result["nature"] = "relation"
     if self.extends is not None:
       result["extends"] = self.extends
-    result["from"] = []
-    for key, value in self.fromSet.items():
-      result["from"].append(key)
-    result["to"] = {}
-    for key, value in self.toSet.items():
-      result["to"].append(key)
-    result["directional"] = self.directional
-    result["properties"] = self.properties
+    if self.fromSet:
+      result["from"] = []
+      for key, value in self.fromSet.items():
+        result["from"].append(key)
+    if self.toSet:
+      result["to"] = {}
+      for key, value in self.toSet.items():
+        result["to"].append(key)
+    if self.directional is not None:
+      result["directional"] = self.directional
+    if self.properties:
+      result["properties"] = self.properties
     return result
 
   @typecheck
