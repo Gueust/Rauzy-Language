@@ -231,14 +231,49 @@ class Object:
   def abst_obj(self, level: int):
     """abst_obj(level)
     Return the object that only includes the depth of levels specified.
-    """
-    if level <= 0:
-      self.objects = {}
-      return self
     
-    for name, obj in self.objects.items():
-      self.objects[name] = obj.abst_obj(level-1)
-    return self
+    Using deepcopy, we make a copy of the function, so that the object
+    calling the abstraction function is not itself modified.
+    """
+    
+    abst = deepcopy(self)
+    
+    if level <= 0:
+      abst.objects = {}
+      return abst
+    
+    for name, obj in abst.objects.items():
+      abst.objects[name] = obj.abst_obj(level-1)
+    return abst
+
+  def abst_obj_p(self, level: int):
+    """abst_obj_p(level)
+    Return the object that only includes the depth of levels specified.
+    
+    The properties of the objects that are beyond the specified level
+      are stored in their ancestor that is within the specified level.
+      
+    Using deepcopy, we make a copy of the function, so that the object
+    calling the abstraction function is not itself modified.
+    """
+    
+    abst = deepcopy(self)
+    
+    if len(abst.objects) == 0:
+      return abst
+    
+    if level <= 0:
+      for name, obj in abst.objects.items():
+        res = obj.abst_obj_p(level-1)
+        for key, prop in res.properties.items():
+          abst.properties[key] = prop
+      abst.objects = {}
+    
+    if level > 0:
+      for name, obj in abst.objects.items():
+        abst.objects[name] = obj.abst_obj_p(level-1)
+    
+    return abst
 
 # TODO: consider in the fromSet and toSet the name: rauzy obj linked
 class Relation:
@@ -453,8 +488,11 @@ if __name__ == "__main__":
   rim.add_object("bolt1", bolt)
   car.add_property("size", "big")
   car.add_property("color", "blue")
+  rim.add_property("style", "fancy")
   bolt.add_property("material", "iron")
-  print(car.abst_obj(0))
+  print(car.abst_obj(1))
+  print("Attempt 2")
+  print(car.abst_obj_p(1))
   #print(car.lookup_obj_parent("bolt1"))
   #print(car.lookup_obj("bolt1"))
   
