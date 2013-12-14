@@ -294,7 +294,7 @@ class Object:
     for e in only2:
       for key, val in abst2.properties.items():
         if key == e and abst2.properties[key] != None:
-          print("[Property] " + key + ", " + val)
+          print("[Property] " + key + " = " + val)
         if key == e and abst2.properties[key] == None:
           print("[Object] " + key)
     
