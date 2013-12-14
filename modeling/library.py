@@ -109,7 +109,7 @@ class Dependency_graph:
     """build()
     Return an ordered dictionnary of the elements in a valid order.
 
-    The order respect the dependency chains: no element is inserted before all
+    The order respects the dependency chains: no element is inserted before all
     its dependencies have been inserted."""
     no_dependency = collections.OrderedDict()
     copy_graph = dict(self.graph)

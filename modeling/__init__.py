@@ -8,7 +8,7 @@ should look at the documentation for the types asked by a the function.
 
 To launch the modules contained in the modeling package as simple scripts use:
 
->>> python3 modeling.core
+>>> python3 -m modeling.core
 
 for the core module for example.
 """
