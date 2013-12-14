@@ -33,26 +33,30 @@ class Model:
     self.obj = None
     self.model_name = None
 
-  def set_lib_path(self, lib_path: str):
+  def set_lib_path(self, lib_path):
     """Set the name for the library file in order to be saved.
 
     It is not needed to set the library path if the library is empty."""
-    self.lib_path = lib_path
+    self.lib_path = str(lib_path)
 
-  def set_obj_path(self, obj_path: str):
+  def set_obj_path(self, obj_path):
     """Set the name of the object file in order to be saved."""
-    self.model_name = obj_path
+    self.model_name = str(obj_path)
 
-  def set_obj(self, obj):
-    """Set the object of the model."""
+  @typecheck
+  def set_obj(self, obj: Object):
+    """set_obj(obj)
+    Set the object of the model."""
     self.obj = obj
 
   def get_obj(self):
     """Return the object of the model."""
     return self.obj
 
-  def set_lib(self, lib):
-    """Set the library of the model."""
+  @typecheck
+  def set_lib(self, lib: Library):
+    """set_lib(lib)
+    Set the library of the model."""
     return self.lib
 
   def get_lib(self):
@@ -79,7 +83,7 @@ class Model:
         location = open(os.path.join(directory_path, lib_file))
       except IOError as err:
         raise IOError(format(err) + " \n Library file not found. \
-          The library path must be relative to the model file")
+          The library path must be relative to the model file.")
 
       # We load the library using ordered dictionaries
       json_lib = json.load(location)
@@ -94,9 +98,9 @@ class Model:
   def save(self, indentation=1):
     """Save the model into an object file and a library file.
 
-    The object must be non-empty (i.e. set_obj must have been called).
-    The path for the object must have been defined using :meth:`.set_obj_path()`.
-    The library path must be non-empty if the library has been set using set_lib.
+    | The object must has been defined using :meth:`.set_obj()`.
+    | The path for the object must have been defined using :meth:`.set_obj_path()`.
+    | The library path must be non-empty if the library has been set using :meth:`.set_lib()`.
 
     `identation` define the indentation used for the json output. Its default value is 1.
     """
