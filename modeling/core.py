@@ -246,12 +246,14 @@ class Object:
       abst.objects[name] = obj.abst_obj(level-1)
     return abst
 
-  def abst_obj_p(self, level: int):
-    """abst_obj_p(level)
+  def abst_obj_prop(self, level: int):
+    """abst_obj_prop(level)
     Return the object that only includes the depth of levels specified.
     
     The properties of the objects that are beyond the specified level
       are stored in their ancestor that is within the specified level.
+      Properties that are stored in the ancestor's properties will be
+      labelled with the path to which we reached this property.    
       
     Using deepcopy, we make a copy of the function, so that the object
     calling the abstraction function is not itself modified.
@@ -264,18 +266,45 @@ class Object:
     
     if level <= 0:
       for name, obj in abst.objects.items():
-        res = obj.abst_obj_p(level-1)
-        if len(res.properties) == 0:
-          abst.properties[name] = None
+        res = obj.abst_obj_prop(level-1)
+        abst.properties[name] = None
         for key, prop in res.properties.items():
           abst.properties[name + '_' + key] = prop
       abst.objects = {}
     
     if level > 0:
       for name, obj in abst.objects.items():
-        abst.objects[name] = obj.abst_obj_p(level-1)
+        abst.objects[name] = obj.abst_obj_prop(level-1)
     
     return abst
+  
+  def compare(self, obj):
+    """compare(obj)
+    Prints out the properties and objects that exist exclusively in one
+    of the two objects that are being compared
+    """
+    abst1, abst2 = self.abst_obj_prop(0), obj.abst_obj_prop(0)
+    set1, set2 = set(abst1.properties.keys()), set(abst2.properties.keys())
+    intersect = set1.intersection(set2)
+    
+    only2 = set2 - intersect
+    only1 = set1 - intersect
+    
+    print ("\n" + "Items not in self: ")
+    for e in only2:
+      for key, val in abst2.properties.items():
+        if key == e and abst2.properties[key] != None:
+          print("[Property] " + key + ", " + val)
+        if key == e and abst2.properties[key] == None:
+          print("[Object] " + key)
+    
+    print ("\n" + "Items not in obj: ")
+    for e in only1:
+      for key, val in abst1.properties.items():
+        if key == e and abst1.properties[key] != None:
+          print("[Property] " + key + " = " + val)
+        if key == e and abst1.properties[key] == None:
+          print("[Object] " + key) 
 
 # TODO: consider in the fromSet and toSet the name: rauzy obj linked
 class Relation:
@@ -492,11 +521,20 @@ if __name__ == "__main__":
   car.add_property("color", "blue")
   tire.add_property("material", "rubber")
   #bolt.add_property("material", "iron")
-  print(car.abst_obj(3))
+  print(car.abst_obj(0))
   print("Abstraction with properties:")
-  print(car.abst_obj_p(0))
+  print(car.abst_obj_prop(0))
   #print(car.lookup_obj_parent("bolt1"))
   #print(car.lookup_obj("bolt1"))
+  
+  car2 = Object()
+  car2.add_object("wheel1", wheel)
+  car2.add_object("wheel2", wheel)
+  car2.add_object("wheel3", wheel)
+  
+  car2.add_object("bolt2", bolt)
+  car2.compare(car)
+  
   
   
   #car.remove_object("wheel1")
