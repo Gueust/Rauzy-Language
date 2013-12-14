@@ -1,6 +1,8 @@
 r"""
+.. module:: library
+
 The library module manages the library of a model. It allows to load, save and
-modify a library. In particular, loading a library needs to solve the
+modify a library. In particular, to load a library, one needs to solve the
 dependencies due to the inheritance between objetcs or relations.
 
 Example of the initialization and the addition of an object class::

@@ -1,4 +1,6 @@
 r"""
+.. module:: core
+
 The core module contains the Object and Relation classes that constitute the
 abstract entities representing Rauzy objects and Rauzy relations.
 
@@ -126,20 +128,20 @@ class Object:
 
   #@typecheck
   def set_extends(self, value):
-    """set_extends(self, value)
+    """set_extends(value)
     Set the extends field of the object to `value` which is a non empty string or None."""
     if value == "" | ( value is not None and not isinstance(value, str) ):
       raise TypeError("The value must be a non empty string or None.")
     self.extends = value
 
   def get_extends(self):
-    """get_extends(self)
+    """get_extends()
     Get the value of the `extends` field."""
     return self.extends
 
   @typecheck
   def add_object(self, name: str, obj):
-    """add_object(self, name, obj)
+    """add_object(name, obj)
     Add the object `obj` with the not empty name `name` to the current object."""
     if self.extends is not None:
       #TODO: modify the type of the error
@@ -152,13 +154,13 @@ class Object:
     
   @typecheck
   def remove_object(self, name: str):
-    """remove_object(self, name)
+    """remove_object(name)
     Remove the object named `name`."""
     del self.objects[name]
 
   @typecheck
   def add_relation(self, name: str, relation: Relation):
-    """add_relation(self, name, relation)"""
+    """add_relation(name, relation)"""
     if self.extends is not None:
       raise TypeError("Impossible to add a relation to an object that extends an other")
     if name == "":
@@ -168,7 +170,7 @@ class Object:
 
   @typecheck
   def remove_relation(self, name: str):
-    """remove_relation(self, name)
+    """remove_relation(name)
     Remove the relation named `name`."""
     if name in relations:
       relations[name].parent = None
@@ -176,23 +178,33 @@ class Object:
 
   @typecheck
   def add_property(self, key: str, value: str):
+    """add_property(key, value)
+    Add a property `key` => `value` on an object. `key` must be a non-empty string.
+
+    It raises an exception is there is already a property associated to `key`."""
     if not isinstance(key, str):
       raise TypeError(_function_name() + " first argument must be a string")
     if key == "":
       raise TypeError(_function_name() + " first argument must be a non empty string")
-    if not isinstance(value,str):
+    if not isinstance(value, str):
       raise TypeError(_function_name() + " second argument must be a string")
+
+    if key in self.properties:
+      raise Exception("The key ", key, " already exist. Remove it first to modify its value.")
     self.properties[key] = value
   
   @typecheck
   def remove_property(self, key: str):
+    """remove_property(key)
+    Remove the property associated to `key`"""
     if key == "":
       raise TypeError(_function_name() + " first argument must be a non empty string")
     del self.properties[key]
 
   @typecheck
   def lookup_obj_parent(self, name: str):
-    """Return the parent of the object named name. None if not found.
+    """lookup_obj_parent(name)
+    Return the parent of the object named `name`. None if not found.
 
     In case of multiple objects with the same name, it returns one parent."""
     if name in self.objects:
@@ -207,7 +219,8 @@ class Object:
 
   @typecheck
   def lookup_obj(self, name: str):
-    """Return the object named name. None if not found.
+    """lookup_obj(name)
+    Return the object named `name`. None if not found.
 
     In case of multiple objects with the same name, it returns one."""
     return self.lookup_obj_parent(name).objects[name]
@@ -270,27 +283,38 @@ class Relation:
 
   @typecheck
   def add_property(self, key: str, value: str):
+    """add_property(key, value)
+    Add a property `key` => `value` on a relation. `key` must be a non-empty string.
+
+    It raises an exception is there is already a property associated to `key`."""
+    if key in self.properties:
+      raise Exception("The key ", key, " already exist. Remove it first to modify its value.")
     self.properties[key] = value
 
   @typecheck
   def set_directional(self, value: bool):
+    """set_directional(value)
+    Set the directinal nature of a relation to `value`, which must be True or False"""
     self.directional = value
 
   @typecheck
   def set_extends(self, name: str):
-    """Set the extends field of the relation"""
+    """set_extends(name)
+    Set the extends field of the relation to the non-empty string `name`."""
     self.extends = name
     
   @typecheck
   def rm_property(self, key: str):
-    """Remove a property using its key. The key must be a non empty string"""
+    """rm_property(key)
+    Remove a property using its key. The key must be a non empty string"""
     if key == "":
       raise TypeError(_function_name() + " first argument must be a non empty string")
     del self.properties[key]
   
   @typecheck
   def add_from(self, name: str):
-    """Add to the origin of a relation an object by its name"""
+    """add_from(name)
+    Add to the origin of a relation an object by its name"""
     obj = self.parent.lookup_obj(name)
     if obj is None:
       raise TypeError("The object named " + str + " has not been found.")
@@ -298,7 +322,8 @@ class Relation:
   
   @typecheck
   def add_to(self, name: str):
-    """Add to the destination of a relation an object by its name"""
+    """add_to(name)
+    Add to the destination of a relation an object by its name"""
     obj = self.parent.lookup_obj(name)
     if obj is None:
       raise TypeError("The object named " + str + " has not been found.")
@@ -306,7 +331,8 @@ class Relation:
   
   @typecheck
   def rm_from(self, name: str):
-    """Remove an object in the destination set of a relation by its name
+    """rm_from(name)
+    Remove an object in the destination set of a relation by its name
 
     The name of the object must be a non empty string."""
     if name == "":
@@ -315,15 +341,17 @@ class Relation:
   
   @typecheck
   def rm_to(self, name: str):
-    """Remove an object in the origin set of a relation by its name
+    """rm_to(name)
+    Remove an object in the origin set of a relation by its name
 
     The name of the object must be a non empty string."""
     if name == "":
       raise TypeError(_function_name() + " first argument must be a non empty string")
     del self.toSet[name]
 
-def parse_object(obj, libraryn, is_lib=False):
-  """Parse a json object and return the Rauzy object
+def parse_object(obj, library, is_lib=False):
+  """parse_object(obj, library, is_lib=False)
+  Parse a json object and return the Rauzy object
 
   obj must be a dictionary"""
   nature = _nature(obj)
@@ -350,7 +378,8 @@ def parse_object(obj, libraryn, is_lib=False):
     object.properties[name] = value
 
 def parse_relation(rlt, library, is_lib=False):
-  """Parse a json object representing a Rauzy relation and returns the
+  """parse_relation(rlt, library, is_lib=False)
+  Parse a json object representing a Rauzy relation and returns the
   corresponding Rauzy relation"""
   nature = _nature(rlt)
   if nature != "relation":
@@ -377,7 +406,10 @@ def parse_relation(rlt, library, is_lib=False):
 
 @typecheck
 def load_json(file: str, debug = False):
-  """Open a file and parse it as json"""
+  """load_json(file, debug=False)
+  Open a file and parse it as json.
+
+  If `debug` is set to true, it will print the loaded data."""
   json_data = open(file)
   data = json.load(json_data)
   if debug :

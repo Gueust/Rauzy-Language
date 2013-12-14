@@ -1,4 +1,6 @@
 r"""
+.. module:: model
+
 The model module contains only the Model class which allows to load and save
 models.
 

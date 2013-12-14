@@ -1,4 +1,7 @@
-r"""The modeling package provides an API to create and modify models that use
+r"""
+.. module:: modeling
+
+The modeling package provides an API to create and modify models that use
 the Rauzy Language.
 
 To launch the modules contained in the modeling package as simple scripts use:
