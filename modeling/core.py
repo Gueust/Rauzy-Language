@@ -130,7 +130,7 @@ class Object:
   def set_extends(self, value):
     """set_extends(value)
     Set the extends field of the object to `value` which is a non empty string or None."""
-    if value == "" | ( value is not None and not isinstance(value, str) ):
+    if (value == "") | ( value is not None and not isinstance(value, str) ):
       raise TypeError("The value must be a non empty string or None.")
     self.extends = value
 
