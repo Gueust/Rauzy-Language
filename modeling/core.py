@@ -117,13 +117,16 @@ class Object:
     result["nature"] = "object"
     if self.extends is not None:
       result["extends"] = self.extends
-    result["objects"] = {}
-    for key, value in self.objects.items():
-      result["objects"][key] = value._get_dict()
-    result["relations"] = {}
-    for key, value in self.relations.items():
-      result["relation"][key] = value._get_dict()
-    result["properties"] = self.properties
+    if self.objects:
+      result["objects"] = {}
+      for key, value in self.objects.items():
+        result["objects"][key] = value._get_dict()
+    if self.relations:
+      result["relations"] = {}
+      for key, value in self.relations.items():
+        result["relation"][key] = value._get_dict()
+    if self.properties:
+      result["properties"] = self.properties
     return result
 
   #@typecheck
