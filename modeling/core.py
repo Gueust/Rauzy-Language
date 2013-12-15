@@ -357,7 +357,7 @@ class Relation:
       for key, value in self.fromSet.items():
         result["from"].append(key)
     if self.toSet:
-      result["to"] = {}
+      result["to"] = []
       for key, value in self.toSet.items():
         result["to"].append(key)
     if self.directional is not None:
