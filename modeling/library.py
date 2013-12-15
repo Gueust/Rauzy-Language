@@ -19,7 +19,7 @@ Example of the initialization and the addition of an object class::
 import json, collections, copy
 from . import core
 from .typechecker import *
-
+from copy import deepcopy
 
 class Dependency:
   """Represent a node of a dependency graph.
@@ -222,23 +222,43 @@ class Library:
     result["objects"] = self.dic_obj
     result["relations"] = self.dic_rlt
     return result
-    
-  def merge(self, lib):
+
+  @staticmethod
+  def merge(lib1, lib2, overloading=False):
+    """Return a new library containing both `lib1` and `lib2`. The new library
+    is totally new and does not share references.
+
+    If `overloading` = False, it will raise an exception if some classes are
+    defined in both libraries.
+
+    If `overloading` = True, then elements in `lib2` will overload elements
+    in `lib1` without raising any exception."""
     newlib = Library()
-    dic1 = self._get_dict()
-    obj1 = dic1["objects"]
-    for name in obj1:
-      newlib.dic_obj[name] = obj1[name]
-    rlt1 = dic1["relations"]
-    for name in rlt1:
-      newlib.dic_rlt[name] = rlt1[name]
-    dic2 = lib._get_dict()
-    obj2 = dic2["objects"]
-    for name in obj2:
-      newlib.dic_obj[name] = obj2[name]
-    rlt2 = dic2["relations"]
-    for name in rlt2:
-      newlib.dic_rlt[name] = rlt2[name]
+
+    new_dict_obj = deepcopy(lib1.dic_obj)
+    new_dict_rlt = deepcopy(lib1.dic_rlt)
+    newlib.dic_obj = new_dict_obj
+    newlib.dic_rlt = new_dict_rlt
+
+    if overloading is True:
+      new_dict_obj.update(deepcopy(lib2.dic_obj))
+      new_dict_rlt.update(deepcopy(lib2.dic_rlt))
+      return newlib
+
+    # Copy of objects
+    for name in lib2.dic_obj:
+      if name in new_dict_obj:
+        raise Exception("The object class " + name + " is in both library."
+          " Abording merge.")
+      new_dict_obj[name] = deepcopy(lib2.dic_obj[name])
+
+    # Copy of relations
+    for name in lib2.dic_rlt:
+      if name in new_dict_rlt:
+        raise Exception("The relation class " + name + " is in both library."
+          " Abording merge.")
+      new_dict_rlt[name] = deepcopy(lib2.dic_rlt[name])
+
     return newlib
 
   def __repr__(self):
@@ -372,16 +392,16 @@ if __name__ == "__main__":
   rlt1.add_property("Importance", 'High')
   ## print("Relation", rlt1)
   lib = Library()
-  lib.add_rlt_class("Depends On", rlt1)
+  #lib.add_rlt_class("Depends On", rlt1)
   ## print("Lib", lib)
   rlt2 = core.Relation.new("Depends On", lib)
   rlt2.add_property("Mutual", "True")
   rlt2.set_directional(False)
   rlt2.set_extends("Depends On")
-  lib.add_rlt_class("Mutual dependency", rlt2)
+  #lib.add_rlt_class("Mutual dependency", rlt2)
   # We put the dependent relation at the beginning
-  del lib.dic_rlt["Depends On"]
-  lib.add_rlt_class("Depends On", rlt1)
+  #del lib.dic_rlt["Depends On"]
+  #lib.add_rlt_class("Depends On", rlt1)
 
   obj = core.Object()
   obj.add_property("Nature", "Evil")
@@ -399,7 +419,7 @@ if __name__ == "__main__":
   lib2.add_rlt_class("Depends On", rlt1)
   ## print("Lib", lib)
   rlt2 = core.Relation.new("Depends On", lib2)
-  rlt2.add_property("Mutual", "True")
+  rlt2.add_property("Mutual", "False")
   rlt2.set_directional(False)
   rlt2.set_extends("Depends On")
   lib2.add_rlt_class("Mutual dependency", rlt2)
@@ -426,7 +446,10 @@ if __name__ == "__main__":
   #print("Modification of the instance", instance)
   #print("The object is not modified", obj)
 
-  new_lib = lib.merge(lib2)
+  new_lib = Library.merge(lib, lib2, overloading=False)
+  print("New Library", new_lib)
+  lib2.dic_obj["Forest"].add_property("Color", "Green")
+  print("Old lib2", lib2)
   print("New Library", new_lib)
   #new_lib.load(json.loads(str(lib)))
   #print("Loaded library from current lib", new_lib)
