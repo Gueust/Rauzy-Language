@@ -69,10 +69,6 @@ def _directional(obj):
 def _library(obj):
   return _get_value(obj, "library")
 
-# Used to define Relation for the type checking. It will be overridden latter.
-class Relation:
-  pass
-
 class Object:
   """Abstract Rauzy object"""
   def __init__(self):
@@ -162,7 +158,7 @@ class Object:
     del self.objects[name]
 
   @typecheck
-  def add_relation(self, name: str, relation: Relation):
+  def add_relation(self, name: str, relation):
     """add_relation(name, relation)"""
     if self.extends is not None:
       raise TypeError("Impossible to add a relation to an object that extends an other")
@@ -228,6 +224,7 @@ class Object:
     In case of multiple objects with the same name, it returns one."""
     return self.lookup_obj_parent(name).objects[name]
   
+  @typecheck
   def abst_obj(self, level: int):
     """abst_obj(level)
     Return the object that only includes the depth of levels specified.
@@ -246,6 +243,7 @@ class Object:
       abst.objects[name] = obj.abst_obj(level-1)
     return abst
 
+  @typecheck
   def abst_obj_prop(self, level: int):
     """abst_obj_prop(level)
     Return the object that only includes the depth of levels specified.
@@ -399,20 +397,50 @@ class Relation:
   @typecheck
   def add_from(self, name: str):
     """add_from(name)
-    Add to the origin of a relation an object by its name"""
+    Add to the origin of a relation an object by its name.
+
+    If the relation has already been added into an object, the existence of the
+    linked object will be checked."""
+    if self.parent is None:
+      #raise Exception("You must add the relation into an object before "
+      #  "filling the fromSet and toSet fields.")
+      print("The relation not being into an object, we cannot check that the ",
+            "object", name, " exists.")
+      self.fromSet[name] = None
+      return
+
     obj = self.parent.lookup_obj(name)
     if obj is None:
-      raise TypeError("The object named " + str + " has not been found.")
-    self.fromSet[name] = obj
+      #raise TypeError("The object named " + name + " has not been found.")
+      print("The object named" + name + "has not been found. ",
+        "Added nevertheless")
+      self.fromSet[name] = None
+    else:
+      self.fromSet[name] = obj
   
   @typecheck
   def add_to(self, name: str):
     """add_to(name)
-    Add to the destination of a relation an object by its name"""
+    Add to the destination of a relation an object by its name.
+
+    If the relation has already been added into an object, the existence of the
+    linked object will be checked."""
+    if self.parent is None:
+      #raise Exception("You must add the relation into an object before "
+      #  "filling the fromSet and toSet fields.")
+      print("The relation not being into an object, we cannot check that the ",
+            "object ", name, " exists.")
+      self.toSet[name] = None
+      return
+
     obj = self.parent.lookup_obj(name)
     if obj is None:
-      raise TypeError("The object named " + str + " has not been found.")
-    self.toSet[name] = obj
+      #raise TypeError("The object named " + name + " has not been found.")
+      print("The object named " + name + " has not been found. ",
+        "Added nevertheless")
+      self.toSet[name] = None
+    else:
+      self.toSet[name] = obj
   
   @typecheck
   def rm_from(self, name: str):
