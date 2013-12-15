@@ -5,6 +5,11 @@ Tutorial
 An example
 ==========
 
+We are going to model the following diagram:
+
+.. image:: _static/diagrams-example-model.png
+
+The structured will be kept but names may change little.
 
 All functionalities
 ===================
