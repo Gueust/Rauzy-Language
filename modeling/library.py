@@ -222,6 +222,24 @@ class Library:
     result["objects"] = self.dic_obj
     result["relations"] = self.dic_rlt
     return result
+    
+  def merge(self, lib):
+    newlib = Library()
+    dic1 = self._get_dict()
+    obj1 = dic1["objects"]
+    for name in obj1:
+      newlib.dic_obj[name] = obj1[name]
+    rlt1 = dic1["relations"]
+    for name in rlt1:
+      newlib.dic_rlt[name] = rlt1[name]
+    dic2 = lib._get_dict()
+    obj2 = dic2["objects"]
+    for name in obj2:
+      newlib.dic_obj[name] = obj2[name]
+    rlt2 = dic2["relations"]
+    for name in rlt2:
+      newlib.dic_rlt[name] = rlt2[name]
+    return newlib
 
   def __repr__(self):
     class ComplexEncoder(json.JSONEncoder):
@@ -329,7 +347,7 @@ class Library:
 
     for key, obj in ordered_obj.items():
       self.dic_obj[key] = core.Object.new(obj, self)
-
+      
   def load(self, json_lib):
     """load(json_lib)
     Load a library from the json data.
@@ -345,6 +363,7 @@ class Library:
     # We load objects
     if "objects" in json_lib:
       self._load_objects(json_lib["objects"])
+    
 
 if __name__ == "__main__":
   print("Testing library module")
@@ -375,6 +394,29 @@ if __name__ == "__main__":
   lib.add_obj_class("SuperHero", obj2)
   print("Library", lib)
 
+  print("lib2***********")
+  lib2 = Library()
+  lib2.add_rlt_class("Depends On", rlt1)
+  ## print("Lib", lib)
+  rlt2 = core.Relation.new("Depends On", lib2)
+  rlt2.add_property("Mutual", "True")
+  rlt2.set_directional(False)
+  rlt2.set_extends("Depends On")
+  lib2.add_rlt_class("Mutual dependency", rlt2)
+  # We put the dependent relation at the beginning
+  del lib2.dic_rlt["Depends On"]
+  lib2.add_rlt_class("Depends On", rlt1)
+
+  obj = core.Object()
+  obj.add_property("Nature", "Forest")
+
+  obj2 = core.Object()
+  obj2.set_extends("Tree")
+  obj2.add_property("Nature", "Tree")
+
+  lib2.add_obj_class("Forest", obj)
+  lib2.add_obj_class("Tree", obj2)
+  print("Library2", lib2)
   #instance = lib.instanciate_obj("Class One")
   #print("Instance of the class 'Class One'", instance)
   #obj.add_property("Added", "Option")
@@ -384,6 +426,7 @@ if __name__ == "__main__":
   #print("Modification of the instance", instance)
   #print("The object is not modified", obj)
 
-  new_lib = Library()
-  new_lib.load(json.loads(str(lib)))
-  print("Loaded library from current lib", new_lib)
+  new_lib = lib.merge(lib2)
+  print("New Library", new_lib)
+  #new_lib.load(json.loads(str(lib)))
+  #print("Loaded library from current lib", new_lib)
