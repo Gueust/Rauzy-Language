@@ -232,7 +232,6 @@ class Object:
     Using deepcopy, we make a copy of the function, so that the object
     calling the abstraction function is not itself modified.
     """
-    
     abst = deepcopy(self)
     
     if level <= 0:
@@ -276,19 +275,26 @@ class Object:
     
     return abst
   
+  def flatten(self):
+    """flatten()
+    Using abst_obj_prop(0), flattens a root object such that all paths to its
+      sub_objects are listed in the group of properties of the root object.
+    """
+    return self.abst_obj_prop(0)
+  
   def compare(self, obj):
     """compare(obj)
-    Prints out the properties and objects that exist exclusively in one
+    Print out the properties and objects that exist exclusively in one
     of the two objects that are being compared
     """
-    abst1, abst2 = self.abst_obj_prop(0), obj.abst_obj_prop(0)
+    abst1, abst2 = self.flatten(), obj.flatten()
     set1, set2 = set(abst1.properties.keys()), set(abst2.properties.keys())
     intersect = set1.intersection(set2)
     
     only2 = set2 - intersect
     only1 = set1 - intersect
     
-    print ("\n" + "Items not in self: ")
+    print ("\n" + "Items only in obj: ")
     for e in only2:
       for key, val in abst2.properties.items():
         if key == e and abst2.properties[key] != None:
@@ -296,7 +302,7 @@ class Object:
         if key == e and abst2.properties[key] == None:
           print("[Object] " + key)
     
-    print ("\n" + "Items not in obj: ")
+    print ("\n" + "Items only in self: ")
     for e in only1:
       for key, val in abst1.properties.items():
         if key == e and abst1.properties[key] != None:
@@ -551,7 +557,7 @@ if __name__ == "__main__":
   #bolt.add_property("material", "iron")
   print(car.abst_obj(0))
   print("Abstraction with properties:")
-  print(car.abst_obj_prop(0))
+  print(car.flatten())
   #print(car.lookup_obj_parent("bolt1"))
   #print(car.lookup_obj("bolt1"))
   
