@@ -309,6 +309,12 @@ class Object:
           print("[Property] " + key + " = " + val)
         if key == e and abst1.properties[key] == None:
           print("[Object] " + key) 
+          
+    print ("\n" + "Items with differing values: ")
+    for e in intersect:
+      for key, val in abst1.properties.items():
+        if key == e and abst1.properties[key] != abst2.properties[key]:
+          print("[Property] " + key + " = " + val)
 
 # TODO: consider in the fromSet and toSet the name: rauzy obj linked
 class Relation:
@@ -540,37 +546,48 @@ def load_json(file: str, debug = False):
 if __name__ == "__main__":
   print("Testing library module")
   car = Object()
+  bike = Object()
   wheel = Object()
+  frame = Object()
   tire = Object()
   rim = Object()
   bolt = Object()
-  contains = Relation()
+
   car.add_object("wheel1", wheel)
   car.add_object("wheel2", wheel)
+  car.add_object("wheel3", wheel)
+  car.add_object("wheel4", wheel)
+
+  bike.add_object("wheel1", wheel)
+  bike.add_object("wheel2", wheel)
+  bike.add_object("frame1", frame)
+
   wheel.add_object("tire1", tire)
   wheel.add_object("rim1", rim)
-  wheel.add_object("rim2", rim)
-  rim.add_object("bolt1", bolt)
+  
+  rim.add_object("standard-bolt", bolt)
+
   car.add_property("size", "big")
   car.add_property("color", "blue")
+  
+  bike.add_property("size", "medium")
+  bike.add_property("color", "blue")
+
   tire.add_property("material", "rubber")
-  #bolt.add_property("material", "iron")
+
+  bolt.add_property("material", "iron")
+
+  print("\n"+"ABSTRACTION:")
   print(car.abst_obj(0))
-  print("Abstraction with properties:")
+
+  print("\n"+"FLATTENING:")
   print(car.flatten())
+
+  print("\n"+"COMPARISON:")
+  bike.compare(car)
+  
   #print(car.lookup_obj_parent("bolt1"))
-  #print(car.lookup_obj("bolt1"))
-  
-  car2 = Object()
-  car2.add_object("wheel1", wheel)
-  car2.add_object("wheel2", wheel)
-  car2.add_object("wheel3", wheel)
-  
-  car2.add_object("bolt2", bolt)
-  car2.compare(car)
-  
-  
-  
+  #print(car.lookup_obj("bolt1")) 
   #car.remove_object("wheel1")
   #car.remove_property("size")
   #car.remove_property("color")
