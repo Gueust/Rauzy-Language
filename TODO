@@ -8,7 +8,9 @@ More complex TODO:
 that extends others.
 - check unicity of keys in the json format (redefine the read/parse function)
 
-- flattening and comparison functions
+[conditionally DONE] flattening and comparison functions
+>> need to add number of objects within each model
+>> need to add example in tutorial for the three functions (abstraction, flattening, comparison)
 
 Discuss:
 - if A has properties, and B extends A has other properties, what are the effective
