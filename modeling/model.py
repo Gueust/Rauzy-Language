@@ -33,13 +33,15 @@ class Model:
     self.obj = None
     self.model_name = None
 
-  def set_lib_path(self, lib_path):
+  @typecheck
+  def set_lib_path(self, lib_path: str):
     """Set the name for the library file in order to be saved.
 
     It is not needed to set the library path if the library is empty."""
     self.lib_path = str(lib_path)
 
-  def set_obj_path(self, obj_path):
+  @typecheck
+  def set_obj_path(self, obj_path : str):
     """Set the name of the object file in order to be saved."""
     self.model_name = str(obj_path)
 
@@ -57,7 +59,7 @@ class Model:
   def set_lib(self, lib: Library):
     """set_lib(lib)
     Set the library of the model."""
-    return self.lib
+    self.lib = lib
 
   def get_lib(self):
     """Return the library of the model."""
