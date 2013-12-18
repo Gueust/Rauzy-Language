@@ -1,5 +1,5 @@
 Small TODO:
-- add  rm_property, set_directional, add_from, add_to, rm_from, rm_to in core.py
+[DONE] add  rm_property, set_directional, add_from, add_to, rm_from, rm_to in core.py
 - decide whether an error should be an exception or a print
 
 More complex TODO:
@@ -10,7 +10,7 @@ that extends others.
 
 [conditionally DONE] flattening and comparison functions
 >> need to add number of objects within each model
->> need to add example in tutorial for the three functions (abstraction, flattening, comparison)
+[DONE] need to add example in tutorial for the three functions (abstraction, flattening, comparison)
 
 Discuss:
 - if A has properties, and B extends A has other properties, what are the effective
