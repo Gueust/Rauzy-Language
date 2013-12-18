@@ -222,7 +222,11 @@ class Object:
     Return the object named `name`. None if not found.
 
     In case of multiple objects with the same name, it returns one."""
-    return self.lookup_obj_parent(name).objects[name]
+    parent = self.lookup_obj_parent(name)
+    if parent is None:
+      return None
+    else:
+      return parent.objects[name]
   
   @typecheck
   def abst_obj(self, level: int):
