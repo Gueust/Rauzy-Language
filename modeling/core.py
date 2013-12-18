@@ -228,7 +228,7 @@ class Object:
     else:
       return parent.objects[name]
   
-  def _remove_unvalid_relations(self):
+  def remove_unvalid_relations(self):
     """Remove the relations that contains in the fromSet or toSet field some
     objects that does not exists in the hierarchy. It does modify the object on
     which the function is called."""
@@ -279,7 +279,7 @@ class Object:
     
     for name, obj in abst.objects.items():
       abst.objects[name] = obj.abst_obj(level-1)
-    abst._remove_unvalid_relations()
+    abst.remove_unvalid_relations()
     return abst
 
   @typecheck
