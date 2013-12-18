@@ -239,6 +239,7 @@ class Object:
       all_objects = set()
       for name, obj in object.objects.items():
         all_objects.update(_recursive_function(obj))
+        all_objects.add(name)
 
       copy = dict(object.relations)
       for rlt_name, rlt in copy.items():
@@ -259,6 +260,7 @@ class Object:
           if obj_name not in all_objects:
             object.remove_relation(rlt_name)
             break
+
       return all_objects
     _recursive_function(self)
 
@@ -343,6 +345,7 @@ class Object:
       for name, obj in abst.objects.items():
         abst.objects[name] = obj.abst_obj_prop(level-1)
     
+    abst.remove_unvalid_relations()
     return abst
   
   def flatten(self):

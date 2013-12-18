@@ -10,7 +10,8 @@ Getting started
 Use of the package modeling
 ===========================
 
-The whole project is using python3.
+The whole project is using python3 and can be download from
+https://github.com/Gueust/Rauzy-Language/.
 The package :mod:`modeling` can be used both in the python3 shell or in a python
 file.
 In order to import the package, one can use::

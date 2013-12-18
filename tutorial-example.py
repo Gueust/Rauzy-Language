@@ -90,17 +90,25 @@ r.add_from("Data Layer")
 r.add_to("Data Sources")
 
 r = Relation()
-root.add_relation("Data Layer->Data Sources", r)
+root.add_relation("Data Layer->External Services", r)
 r.set_extends("default")
 r.add_from("Data Layer")
 r.add_to("External Services")
 
 # Adding all the remaining relations
+
+# Relations comming from Business Layer
 r = Relation()
 root.add_relation("Business Layer->Data Layer", r)
 r.set_extends("default")
 r.add_from("Business Layer")
 r.add_to("Data Layer")
+
+r = Relation()
+root.add_relation("Business Layer->Cross Cutting", r)
+r.set_extends("default")
+r.add_from("Business Layer")
+r.add_to("Cross Cutting")
 
 # Relations comming from Data Layer
 r = Relation()
