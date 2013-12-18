@@ -428,7 +428,7 @@ class Relation:
     obj = self.parent.lookup_obj(name)
     if obj is None:
       #raise TypeError("The object named " + name + " has not been found.")
-      print("The object named" + name + "has not been found. ",
+      print("The object named " + name + " has not been found. ",
         "Added nevertheless")
       self.fromSet[name] = None
     else:

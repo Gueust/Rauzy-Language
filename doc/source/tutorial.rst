@@ -9,7 +9,8 @@ We are going to model the following diagram:
 
 .. image:: _static/diagrams-example-model.png
 
-The structured will be kept but names may change little.
+The equivalent representation of this model is available in tutorial-example.py
+at the root of the project directory.
 
 All functionalities
 ===================
