@@ -9,14 +9,18 @@ We are going to model the following diagram:
 
 .. image:: _static/diagrams-example-model.png
 
-The equivalent representation of this model is available in tutorial-example.py
+The equivalent representation of this model is available in :file:`tutorial-example.py`
 at the root of the project directory.
+
+This example also shows the behavior of the abstractions functions.
+
+.. literalinclude:: ../../tutorial-example.py
 
 All functionalities
 ===================
 
 All API functions are described in :mod:`modeling`. However, the most high level
-functionalities to are worth being highlighted:
+functionalities are worth being highlighted:
 
 - The :meth:`~modeling.model.Model.load` and :meth:`~modeling.model.Model.save`
   functions allows to load model from files and to write them to files.
@@ -34,6 +38,14 @@ functionalities to are worth being highlighted:
   the `level` sub-hierarchy. In particular, after having removed the objects
   deeper than `level` it calls :meth:`~modeling.core.Object.remove_unvalid_relations`
   that removes relations made unvalid because of the deletion of some objects.
+  An example applied to the diagram upper in this page is included in
+  tutorial-example.py
+- The :meth:`keyword_abstraction(key, value) <modeling.core.Object.keyword_abstraction>`
+  abstraction function allows a more general abstraction. It abstracts an object
+  keeping only sub-objects containing the `key` => `value` property. In a more
+  general case, we should give a key and a boolean function and the abstraction 
+  would keep all the objets which have this `key` => `value` in their properties
+  and for which f(value) returns true.
 
 
 Further development

@@ -188,7 +188,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
   ('index', 'RauzyProject.tex', u'Rauzy Project Documentation',
-   u'Jean-Baptiste Lespiau', 'manual'),
+   u'Jean-Baptiste Lespiau, Lívia Ribeiro and Patricia Wang', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

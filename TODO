@@ -16,6 +16,4 @@ Discuss:
 - if A has properties, and B extends A has other properties, what are the effective
 properties of B, and what are the properties really written in B.
 
-- abstraction function JB
 - flattening with the properties of the parents
-- remove unused relations in the abstractions
