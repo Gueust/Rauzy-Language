@@ -231,6 +231,10 @@ class Object:
     
     Using deepcopy, we make a copy of the function, so that the object
     calling the abstraction function is not itself modified.
+    
+    This does not yet account for additional properties from extended objects.
+    
+    Please see tutorial for an extended example that incorporates the use of this function.
     """
     abst = deepcopy(self)
     
@@ -254,6 +258,10 @@ class Object:
       
     Using deepcopy, we make a copy of the function, so that the object
     calling the abstraction function is not itself modified.
+    
+    This does not yet account for additional properties from extended objects.
+    
+    Please see tutorial for an extended example that incorporates the use of this function.
     """
     
     abst = deepcopy(self)
@@ -265,6 +273,7 @@ class Object:
       for name, obj in abst.objects.items():
         res = obj.abst_obj_prop(level-1)
         abst.properties[name] = None
+                
         for key, prop in res.properties.items():
           abst.properties[name + '_' + key] = prop
       abst.objects = {}
@@ -279,6 +288,10 @@ class Object:
     """flatten()
     Using abst_obj_prop(0), flattens a root object such that all paths to its
       sub_objects are listed in the group of properties of the root object.
+    
+    This does not yet account for additional properties from extended objects.
+    
+    Please see tutorial for an extended example that incorporates the use of this function.
     """
     return self.abst_obj_prop(0)
   
@@ -286,6 +299,10 @@ class Object:
     """compare(obj)
     Print out the properties and objects that exist exclusively in one
     of the two objects that are being compared
+    
+    This does not yet account for additional properties from extended objects.
+    
+    Please see tutorial for an extended example that incorporates the use of this function.
     """
     abst1, abst2 = self.flatten(), obj.flatten()
     set1, set2 = set(abst1.properties.keys()), set(abst2.properties.keys())
