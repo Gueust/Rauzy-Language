@@ -45,6 +45,7 @@ cross = Object()
 cross.add_object("Security", Object())
 cross.add_object("Operational Management", Object())
 cross.add_object("Communication", Object())
+cross.add_property("Abstraction", "Important")
 root.add_object("Cross Cutting", cross)
 
 # Adding Business layer sub-system
@@ -53,6 +54,7 @@ business.add_object("Application Facade", Object())
 business.add_object("Business Workflow", Object())
 business.add_object("Business Components", Object())
 business.add_object("Business Entities", Object())
+business.add_property("Abstraction", "Important")
 r = Relation()
 business.add_relation("Inner1", r)
 r.set_extends("default")
@@ -134,7 +136,16 @@ r.add_from("Presentation Layer")
 r.add_to("Business Layer")
 
 # Printing the model
-print(root)
+#print(root)
+
+# Abstraction using levels
+print("Abstraction using levels")
+print(root.abst_obj(1))
+
+# Abstraction using key => value property
+print()
+print("Abstraction using property")
+print(root.keyword_abstraction("Abstraction", "Important"))
 
 # Saving the model
 model = Model()

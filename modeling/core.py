@@ -171,8 +171,8 @@ class Object:
   def remove_relation(self, name: str):
     """remove_relation(name)
     Remove the relation named `name`."""
-    if name in relations:
-      relations[name].parent = None
+    if name in self.relations:
+      self.relations[name].parent = None
       del self.relations[name]
 
   @typecheck
@@ -237,16 +237,17 @@ class Object:
       """Returns the set containing all the names of the objects defined in the
       hierarchy, and remove the unvalid relations directly contained by object."""
       all_objects = set()
-      for name, obj in object.objects:
+      for name, obj in object.objects.items():
         all_objects.update(_recursive_function(obj))
 
-      for rlt_name, rlt in object.relations:
-        valid = true
+      copy = dict(object.relations)
+      for rlt_name, rlt in copy.items():
+        valid = True
         # We check that all the objects in fromSet are valid
         for obj_name in rlt.fromSet.keys():
           if obj_name not in all_objects:
             object.remove_relation(rlt_name)
-            valid = false
+            valid = False
             break
 
         # If we have already find that the rlt is invalid, we skip the rest
@@ -258,10 +259,38 @@ class Object:
           if obj_name not in all_objects:
             object.remove_relation(rlt_name)
             break
-
       return all_objects
-    _recursive_function(self, set())
+    _recursive_function(self)
 
+  def keyword_abstraction(self, key: str, value: str):
+    """Return an abstraction of the current object keeping only objects
+    having the `key` => `value` property. It does not modify the current 
+    object. The root object is never deleted.
+
+    An object having the `key` => `value` appear in the abstraction only if
+    its parent has also the `key` => `value` property. Then if you want to keep
+    an object in the sub-hierarchy, all the objects from the root object to this
+    object must have the `key` => `value` property.
+
+    The relations made unvalid because of the removal of some objects
+    are automatically deleted."""
+    abstraction = deepcopy(self)
+
+    def _recursive_deletion(object):
+      copy = dict(object.objects)
+      for name, obj in copy.items():
+        if key not in obj.properties:
+          object.remove_object(name)
+        else:
+          if obj.properties[key] != value:
+            object.remove_object(name)
+      # Recursive call
+      for name, obj in object.objects.items():
+        _recursive_deletion(obj)
+
+    _recursive_deletion(abstraction)
+    abstraction.remove_unvalid_relations()
+    return abstraction
 
   @typecheck
   def abst_obj(self, level: int):
@@ -270,7 +299,8 @@ class Object:
     
     Using deepcopy, we make a copy of the function, so that the object
     calling the abstraction function is not itself modified.
-    """
+    The relations made unvalid because of the removal of some objects
+    are automatically deleted."""
     abst = deepcopy(self)
     
     if level <= 0:
