@@ -120,7 +120,7 @@ class Object:
     if self.relations:
       result["relations"] = {}
       for key, value in self.relations.items():
-        result["relation"][key] = value._get_dict()
+        result["relations"][key] = value._get_dict()
     if self.properties:
       result["properties"] = self.properties
     return result
