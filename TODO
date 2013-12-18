@@ -1,19 +1,16 @@
 Small TODO:
-- add  rm_property, set_directional, add_from, add_to, rm_from, rm_to in core.py
-- decide whether an error should be an exception or a print
+- decide whether an error should be an exception or a print[Done: exception]
 
 More complex TODO:
 - do a check() function in Model that checks if everything is coherent
 - get_all_attr function that gives all the attributes of a relation or an object
 that extends others.
 - check unicity of keys in the json format (redefine the read/parse function)
+- flattening with the properties of the parents
 
 [conditionally DONE] flattening and comparison functions
 >> need to add number of objects within each model
 >> need to add example in tutorial for the three functions (abstraction, flattening, comparison)
 
-Discuss:
-- if A has properties, and B extends A has other properties, what are the effective
-properties of B, and what are the properties really written in B.
 
-- flattening with the properties of the parents
+
