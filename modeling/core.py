@@ -228,6 +228,41 @@ class Object:
     else:
       return parent.objects[name]
   
+  def _remove_unvalid_relations(self):
+    """Remove the relations that contains in the fromSet or toSet field some
+    objects that does not exists in the hierarchy. It does modify the object on
+    which the function is called."""
+
+    def _recursive_function(object):
+      """Returns the set containing all the names of the objects defined in the
+      hierarchy, and remove the unvalid relations directly contained by object."""
+      all_objects = set()
+      for name, obj in object.objects:
+        all_objects.update(_recursive_function(obj))
+
+      for rlt_name, rlt in object.relations:
+        valid = true
+        # We check that all the objects in fromSet are valid
+        for obj_name in rlt.fromSet.keys():
+          if obj_name not in all_objects:
+            object.remove_relation(rlt_name)
+            valid = false
+            break
+
+        # If we have already find that the rlt is invalid, we skip the rest
+        if not valid:
+          continue
+
+        # We check that all the objects in toSet are valid
+        for obj_name in rlt.toSet.keys():
+          if obj_name not in all_objects:
+            object.remove_relation(rlt_name)
+            break
+
+      return all_objects
+    _recursive_function(self, set())
+
+
   @typecheck
   def abst_obj(self, level: int):
     """abst_obj(level)
@@ -244,6 +279,7 @@ class Object:
     
     for name, obj in abst.objects.items():
       abst.objects[name] = obj.abst_obj(level-1)
+    abst._remove_unvalid_relations()
     return abst
 
   @typecheck
