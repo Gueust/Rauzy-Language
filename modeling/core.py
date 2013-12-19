@@ -154,7 +154,10 @@ class Object:
   @typecheck
   def remove_object(self, name: str):
     """remove_object(name)
-    Remove the object named `name`."""
+    Remove the object named `name`.
+    
+    Please see tutorial for an extended example that incorporates the use of this function.
+    """
     del self.objects[name]
 
   @typecheck
@@ -195,7 +198,10 @@ class Object:
   @typecheck
   def remove_property(self, key: str):
     """remove_property(key)
-    Remove the property associated to `key`"""
+    Remove the property associated to `key
+    
+    Please see tutorial for an extended example that incorporates the use of this function.
+    `"""
     if key == "":
       raise TypeError(_function_name() + " first argument must be a non empty string")
     del self.properties[key]
@@ -205,7 +211,10 @@ class Object:
     """lookup_obj_parent(name)
     Return the parent of the object named `name`. None if not found.
 
-    In case of multiple objects with the same name, it returns one parent."""
+    In case of multiple objects with the same name, it returns one parent.
+    
+    Please see tutorial for an extended example that incorporates the use of this function.
+    """
     if name in self.objects:
       return self
 
@@ -221,7 +230,10 @@ class Object:
     """lookup_obj(name)
     Return the object named `name`. None if not found.
 
-    In case of multiple objects with the same name, it returns one."""
+    In case of multiple objects with the same name, it returns one.
+    
+    Please see tutorial for an extended example that incorporates the use of this function.
+    """
     parent = self.lookup_obj_parent(name)
     if parent is None:
       return None
@@ -368,6 +380,36 @@ class Object:
     Please see tutorial for an extended example that incorporates the use of this function.
     """
     return self.abst_obj_prop(0)
+  
+  def flatten_with_extends(self, library):
+    """flatten_with_extends()
+    """
+    abst = deepcopy(self)
+    level = 0
+    
+    if self.extends != None:
+      temp = library.instanciate_obj(self.extends)
+      temp = temp.flatten_with_extends(library)
+      abst.properties = dict(list(abst.properties.items()) + list(temp.properties.items()))
+      
+    if len(abst.objects) == 0:
+      return abst
+    
+    if level <= 0:
+      for name, obj in abst.objects.items():
+        res = obj.abst_obj_prop(level-1)
+        abst.properties[name] = None
+                
+        for key, prop in res.properties.items():
+          abst.properties[name + '_' + key] = prop
+      abst.objects = {}
+    
+    if level > 0:
+      for name, obj in abst.objects.items():
+        abst.objects[name] = obj.abst_obj_prop(level-1)
+    
+    abst.remove_unvalid_relations()
+    return abst
   
   def compare(self, obj):
     """compare(obj)
@@ -643,7 +685,7 @@ if __name__ == "__main__":
   tire = Object()
   rim = Object()
   bolt = Object()
-
+  
   car.add_object("wheel1", wheel)
   car.add_object("wheel2", wheel)
   car.add_object("wheel3", wheel)
@@ -668,6 +710,18 @@ if __name__ == "__main__":
 
   bolt.add_property("material", "iron")
 
+  print("\n"+"PRINT OBJECT:")
+  print(car)
+  
+  print("\n"+"REMOVE OBJECT & PROPERTY:")
+  car.remove_object("wheel1")
+  tire.remove_property("material")
+  print(car)
+  
+  print("\n"+"LOOKUP OBJECT:")
+  print(car.lookup_obj_parent("standard-bolt")) 
+  print(car.lookup_obj("standard-bolt")) 
+  
   print("\n"+"ABSTRACTION:")
   print(car.abst_obj(0))
 
@@ -676,10 +730,3 @@ if __name__ == "__main__":
 
   print("\n"+"COMPARISON:")
   bike.compare(car)
-  
-  #print(car.lookup_obj_parent("bolt1"))
-  #print(car.lookup_obj("bolt1")) 
-  #car.remove_object("wheel1")
-  #car.remove_property("size")
-  #car.remove_property("color")
-  #print(car)
