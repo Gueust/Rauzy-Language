@@ -301,16 +301,13 @@ class Object:
     
     Using deepcopy, we make a copy of the function, so that the object
     calling the abstraction function is not itself modified.
-<<<<<<< HEAD
     
     This does not yet account for additional properties from extended objects.
     
     Please see tutorial for an extended example that incorporates the use of this function.
-    """
-=======
+
     The relations made unvalid because of the removal of some objects
     are automatically deleted."""
->>>>>>> dff713106df970c0f3a4a5a56bc8247fd591e975
     abst = deepcopy(self)
     
     if level <= 0:
