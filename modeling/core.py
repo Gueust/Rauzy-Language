@@ -120,7 +120,7 @@ class Object:
     if self.relations:
       result["relations"] = {}
       for key, value in self.relations.items():
-        result["relation"][key] = value._get_dict()
+        result["relations"][key] = value._get_dict()
     if self.properties:
       result["properties"] = self.properties
     return result
@@ -171,8 +171,8 @@ class Object:
   def remove_relation(self, name: str):
     """remove_relation(name)
     Remove the relation named `name`."""
-    if name in relations:
-      relations[name].parent = None
+    if name in self.relations:
+      self.relations[name].parent = None
       del self.relations[name]
 
   @typecheck
@@ -222,8 +222,78 @@ class Object:
     Return the object named `name`. None if not found.
 
     In case of multiple objects with the same name, it returns one."""
-    return self.lookup_obj_parent(name).objects[name]
+    parent = self.lookup_obj_parent(name)
+    if parent is None:
+      return None
+    else:
+      return parent.objects[name]
   
+  def remove_unvalid_relations(self):
+    """Remove the relations that contains in the fromSet or toSet field some
+    objects that does not exists in the hierarchy. It does modify the object on
+    which the function is called."""
+
+    def _recursive_function(object):
+      """Returns the set containing all the names of the objects defined in the
+      hierarchy, and remove the unvalid relations directly contained by object."""
+      all_objects = set()
+      for name, obj in object.objects.items():
+        all_objects.update(_recursive_function(obj))
+        all_objects.add(name)
+
+      copy = dict(object.relations)
+      for rlt_name, rlt in copy.items():
+        valid = True
+        # We check that all the objects in fromSet are valid
+        for obj_name in rlt.fromSet.keys():
+          if obj_name not in all_objects:
+            object.remove_relation(rlt_name)
+            valid = False
+            break
+
+        # If we have already find that the rlt is invalid, we skip the rest
+        if not valid:
+          continue
+
+        # We check that all the objects in toSet are valid
+        for obj_name in rlt.toSet.keys():
+          if obj_name not in all_objects:
+            object.remove_relation(rlt_name)
+            break
+
+      return all_objects
+    _recursive_function(self)
+
+  def keyword_abstraction(self, key: str, value: str):
+    """Return an abstraction of the current object keeping only objects
+    having the `key` => `value` property. It does not modify the current 
+    object. The root object is never deleted.
+
+    An object having the `key` => `value` appear in the abstraction only if
+    its parent has also the `key` => `value` property. Then if you want to keep
+    an object in the sub-hierarchy, all the objects from the root object to this
+    object must have the `key` => `value` property.
+
+    The relations made unvalid because of the removal of some objects
+    are automatically deleted."""
+    abstraction = deepcopy(self)
+
+    def _recursive_deletion(object):
+      copy = dict(object.objects)
+      for name, obj in copy.items():
+        if key not in obj.properties:
+          object.remove_object(name)
+        else:
+          if obj.properties[key] != value:
+            object.remove_object(name)
+      # Recursive call
+      for name, obj in object.objects.items():
+        _recursive_deletion(obj)
+
+    _recursive_deletion(abstraction)
+    abstraction.remove_unvalid_relations()
+    return abstraction
+
   @typecheck
   def abst_obj(self, level: int):
     """abst_obj(level)
@@ -231,11 +301,16 @@ class Object:
     
     Using deepcopy, we make a copy of the function, so that the object
     calling the abstraction function is not itself modified.
+<<<<<<< HEAD
     
     This does not yet account for additional properties from extended objects.
     
     Please see tutorial for an extended example that incorporates the use of this function.
     """
+=======
+    The relations made unvalid because of the removal of some objects
+    are automatically deleted."""
+>>>>>>> dff713106df970c0f3a4a5a56bc8247fd591e975
     abst = deepcopy(self)
     
     if level <= 0:
@@ -244,6 +319,7 @@ class Object:
     
     for name, obj in abst.objects.items():
       abst.objects[name] = obj.abst_obj(level-1)
+    abst.remove_unvalid_relations()
     return abst
 
   @typecheck
@@ -282,6 +358,7 @@ class Object:
       for name, obj in abst.objects.items():
         abst.objects[name] = obj.abst_obj_prop(level-1)
     
+    abst.remove_unvalid_relations()
     return abst
   
   def flatten(self):
@@ -441,7 +518,7 @@ class Relation:
     obj = self.parent.lookup_obj(name)
     if obj is None:
       #raise TypeError("The object named " + name + " has not been found.")
-      print("The object named" + name + "has not been found. ",
+      print("The object named " + name + " has not been found. ",
         "Added nevertheless")
       self.fromSet[name] = None
     else:

@@ -28,7 +28,8 @@ sys.path.insert(0, os.path.abspath("../../modeling"))
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc',
-              'sphinx.ext.autosummary']
+              'sphinx.ext.autosummary',
+              'sphinx.ext.viewcode']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -187,7 +188,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
   ('index', 'RauzyProject.tex', u'Rauzy Project Documentation',
-   u'Jean-Baptiste Lespiau', 'manual'),
+   u'Jean-Baptiste Lespiau, Lívia Ribeiro and Patricia Wang', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

@@ -22,9 +22,7 @@ from .typechecker import *
 from copy import deepcopy
 
 class Dependency:
-  """Represent a node of a dependency graph.
-
-  It is only used internally by the library class and the implementation is not detailed here."""
+  """Represent a node of a dependency graph."""
 
   """depends_on is the set of the names of the elements that are needed for this element.
   used_by is the set of names of the elements that depends on the current element."""
@@ -58,7 +56,21 @@ class Dependency:
     return len(self.depends_on) == 0
 
 class Dependency_graph:
-  """A dependency graph containing dependencies."""
+  """A dependency graph containing dependencies.
+
+  It is only used internally by the library class to order the definitions of
+  classes in order to build the object in an order compatible with the
+  dependencies.
+
+  To put it simply, we build a graph where the links represent dependencies
+  (A -> B iff B is needed for A). Then, we remove the nodes that have no
+  dependencies, remove the dependencies implying this node and remove again the
+  nodes that have no dependencies and so on.
+
+  Both the linked and the linking nodes are aware of the existence of a
+  dependency. This make it possible to have an efficient algorithm (i.e. linear
+  in the number of dependencies) to check that the graph has a correct ordering
+  of the element such that all elements are after its dependencies."""
   def __init__(self):
     self.graph = {}
 
