@@ -41,6 +41,21 @@ bike.add_property("color", "blue")
 tire.add_property("material", "rubber")
 bolt.add_property("material", "iron")
 
+#Print object
+print("\n"+"PRINT OBJECT:")
+print(car)
+
+#Remove object wheel from car and property material from tire
+print("\n"+"REMOVE OBJECT & PROPERTY:")
+car.remove_object("wheel1")
+tire.remove_property("material")
+print(car)
+
+#Lookup object standard-bolt  
+print("\n"+"LOOKUP OBJECT:")
+print(car.lookup_obj_parent("standard-bolt")) 
+print(car.lookup_obj("standard-bolt")) 
+
 #Abstract car object to level 1 - will remove any objects beyond the specified level
 print("\n"+"ABSTRACTION:")
 print(car.abst_obj(1))
