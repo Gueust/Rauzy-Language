@@ -2,9 +2,13 @@ from modeling.model import *
 from modeling.library import *
 from modeling.core import *
 
-#Create two objects: car and bike
+#Create three objects: car, bike and citroen
 car = Object()
 bike = Object()
+ferrari = Object()
+
+#Set ferrari extends to car
+ferrari.set_extends("car")
 
 #Create sub-objects: wheel, frame, tire, rim, bolt
 wheel = Object()
@@ -37,9 +41,22 @@ car.add_property("color", "blue")
 bike.add_property("size", "medium")
 bike.add_property("color", "blue")
 
+#Add properties to ferrari
+car.add_property("style", "flashy")
+car.add_property("speed", "fast")
+
 #Add properties to tire, bolt
 tire.add_property("material", "rubber")
 bolt.add_property("material", "iron")
+
+#Add objects to library
+model = Model()
+model.obj = car
+model.lib_path = "car.lib"
+model.lib.dic_obj["wheel"] = wheel
+model.lib.dic_obj["car"] = car
+model.model_name = "examples/car.model"
+model.save()
 
 #Print object
 print("\n"+"PRINT OBJECT:")
@@ -63,6 +80,11 @@ print(car.abst_obj(1))
 #Flatten car object - all sub-objects will be represented as paths in the properties group of the root object
 print("\n"+"FLATTENING:")
 print(car.flatten())
+
+#Flatten car object - compares a flatten versus flatten_with_extends, which will add objects and properties of all objects with extends
+print("\n"+"FLATTENING WITH CONSIDERATION FOR EXTENDS:")
+print(ferrari.flatten())
+print(ferrari.flatten_with_extends(model.lib))
 
 #Compare a bike to a car - objects and properties are compared and sorted into 3 groups: only in bike, only in car and differing values
 print("\n"+"COMPARISON:")
