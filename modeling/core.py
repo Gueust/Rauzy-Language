@@ -382,7 +382,8 @@ class Object:
     return self.abst_obj_prop(0)
   
   def flatten_with_extends(self, library):
-    """flatten_with_extends()
+    """flatten_with_extends(library)    
+    Using instanciate_obj function from Library and abst_obj_prop, collects all lower-level objects and properties and lists their path as a property in the root object.
     
     Please see tutorial for an extended example that incorporates the use of this function.
     """
@@ -430,6 +431,44 @@ class Object:
     Please see tutorial for an extended example that incorporates the use of this function.
     """
     abst1, abst2 = self.flatten(), obj.flatten()
+    set1, set2 = set(abst1.properties.keys()), set(abst2.properties.keys())
+    intersect = set1.intersection(set2)
+    
+    only2 = set2 - intersect
+    only1 = set1 - intersect
+    
+    print ("\n" + "Items only in obj: ")
+    for e in only2:
+      for key, val in abst2.properties.items():
+        if key == e and abst2.properties[key] != None:
+          print("[Property] " + key + " = " + val)
+        if key == e and abst2.properties[key] == None:
+          print("[Object] " + key)
+    
+    print ("\n" + "Items only in self: ")
+    for e in only1:
+      for key, val in abst1.properties.items():
+        if key == e and abst1.properties[key] != None:
+          print("[Property] " + key + " = " + val)
+        if key == e and abst1.properties[key] == None:
+          print("[Object] " + key) 
+          
+    print ("\n" + "Items with differing values: ")
+    for e in intersect:
+      for key, val in abst1.properties.items():
+        if key == e and abst1.properties[key] != abst2.properties[key]:
+          print("[Property] " + key + " = " + val)
+          
+  def compare_with_extends(self, obj, library):
+    """compare_with_extends(obj)
+    Print out the properties and objects that exist exclusively in one
+    of the two objects that are being compared.
+    
+    This also accounts for additional properties from extended objects.
+    
+    Please see tutorial for an extended example that incorporates the use of this function.
+    """
+    abst1, abst2 = self.flatten_with_extends(library), obj.flatten_with_extends(library)
     set1, set2 = set(abst1.properties.keys()), set(abst2.properties.keys())
     intersect = set1.intersection(set2)
     
