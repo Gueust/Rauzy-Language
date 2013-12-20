@@ -139,12 +139,16 @@ class Model:
       print("Model saved in", self.model_name)
 
 if __name__ == "__main__":
-  print("Testing model module")
-  #Create three objects: car, bike and citroen
+  #Create three objects: car, bike and ferrari
   car = Object()
   bike = Object()
+  fleet = Object()
   ferrari = Object()
+  camry = Object()
+
+  #Set camry and ferrari extends to car
   ferrari.set_extends("car")
+  camry.set_extends("car")
 
   #Create sub-objects: wheel, frame, tire, rim, bolt
   wheel = Object()
@@ -164,6 +168,10 @@ if __name__ == "__main__":
   bike.add_object("wheel2", wheel)
   bike.add_object("frame1", frame)
 
+  #Add sub-objects to fleet
+  fleet.add_object("camry1", camry)
+  fleet.add_object("ferrari1", ferrari)
+
   #Add sub-objects to wheel, rim
   wheel.add_object("tire1", tire)
   wheel.add_object("rim1", rim)
@@ -177,9 +185,17 @@ if __name__ == "__main__":
   bike.add_property("size", "medium")
   bike.add_property("color", "blue")
 
+  #Add properties to fleet
+  fleet.add_property("owner", "santa claus")
+  fleet.add_property("location", "north pole")
+
   #Add properties to ferrari
-  car.add_property("style", "flashy")
-  car.add_property("speed", "fast")
+  ferrari.add_property("style", "flashy")
+  ferrari.add_property("speed", "fast")
+
+  #Add properties to camry
+  camry.add_property("style", "family")
+  camry.add_property("speed", "normal")
 
   #Add properties to tire, bolt
   tire.add_property("material", "rubber")
@@ -195,33 +211,40 @@ if __name__ == "__main__":
   model.save()
 
   #Print object
-  print("\n"+"PRINT OBJECT:")
+  print("\n"+"PRINT OBJECT [car]:")
   print(car)
 
   #Remove object wheel from car and property material from tire
-  print("\n"+"REMOVE OBJECT & PROPERTY:")
+  print("\n"+"REMOVE OBJECT & PROPERTY [wheel1 from car, material from tire]:")
   car.remove_object("wheel1")
   tire.remove_property("material")
   print(car)
 
   #Lookup object standard-bolt  
-  print("\n"+"LOOKUP OBJECT:")
+  print("\n"+"LOOKUP OBJECT [standard-bolt in car]:")
   print(car.lookup_obj_parent("standard-bolt")) 
   print(car.lookup_obj("standard-bolt")) 
 
   #Abstract car object to level 1 - will remove any objects beyond the specified level
-  print("\n"+"ABSTRACTION:")
-  print(car.abst_obj(1))
+  print("\n"+"ABSTRACTION [fleet]:")
+  print(fleet.abst_obj(1))
 
-  #Flatten car object - all sub-objects will be represented as paths in the properties group of the root object
-  print("\n"+"FLATTENING:")
-  print(car.flatten())
+  #Flatten ferrari object - all sub-objects will be represented as paths in the properties group of the root object
+  print("\n"+"FLATTENING [fleet]:")
+  print(fleet.flatten())
 
-  #Flatten car object - compares a flatten versus flatten_with_extends, which will add objects and properties of all objects with extends
-  print("\n"+"FLATTENING WITH CONSIDERATION FOR EXTENDS:")
-  print(ferrari.flatten())
-  print(ferrari.flatten_with_extends(model.lib))
+  #Flatten ferrari object - flatten_with_extends, which will flatten but also add objects and properties of all objects with extends
+  print("\n"+"FLATTENING WITH CONSIDERATION FOR EXTENDS [fleet]:")
+  print(fleet.flatten_with_extends(model.lib))
 
   #Compare a bike to a car - objects and properties are compared and sorted into 3 groups: only in bike, only in car and differing values
-  print("\n"+"COMPARISON:")
+  print("\n"+"COMPARISON [bike = self, car = obj]:")
   bike.compare(car)
+  
+  #Compare a fleet to a camry - objects and properties are compared and sorted into 3 groups: only in fleet, only in camry and differing values
+  print("\n"+"COMPARISON [fleet = self, camry = obj]:")
+  fleet.compare(camry)
+  
+  #Compare a fleet to a camry accounting also for extended objects
+  print("\n"+"COMPARISON [fleet = self, camry = obj]:")
+  fleet.compare_with_extends(camry, model.lib)
