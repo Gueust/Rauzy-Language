@@ -16,6 +16,14 @@ This example also shows the behavior of the abstractions functions.
 
 .. literalinclude:: ../../tutorial-example.py
 
+An second example
+==========
+
+We demonstrate the functiosn that create, abstract, flatten and compare objects in :file:`tutorial-example-abst_flat_comp.py`
+at the root of the project directory.
+
+.. literalinclude:: ../../tutorial-example-abst_flat_comp.py
+
 All functionalities
 ===================
 
@@ -46,8 +54,26 @@ functionalities are worth being highlighted:
   general case, we should give a key and a boolean function and the abstraction 
   would keep all the objets which have this `key` => `value` in their properties
   and for which f(value) returns true.
-
-
+- The :meth:`flatten() <modeling.core.Object.flatten>` returns an object, which stores
+  in its properties group the entire sub-hierarchy of objects and their respective
+  properties. An example that applies this function can be found in
+  tutorial-example-abst_flat_comp.py
+- The :meth:`flatten_with_extends(library) <modeling.core.Object.flatten_with_extends>` returns
+  a similar object as the previous method, but also includes the objects and properties
+  that exist within any objects that are extended within any item in the object hierarchy.
+  An example that applies this function can be found in tutorial-example-abst_flat_comp.py
+- The :meth:`compare(obj) <modeling.core.Object.compare>` displays to the user the items,
+  both objects and properties, that are found exclusively in one of the two objects that
+  are being compared as well as the properties that are shared but that correspond to a
+  different value. An example that applies this function can be found in
+  tutorial-example-abst_flat_comp.py
+- The :meth:`compare_with_extends(obj, library) <modeling.core.Object.compare_with_extends>`
+  displays to the user the items, both objects and properties, that are found exclusively
+  in one of the two objects that are being compared as well as the properties that are
+  shared but that correspond to a different value. An example that applies this function
+  can be found in tutorial-example-abst_flat_comp.py
+  
+  
 Further development
 ===================
 
