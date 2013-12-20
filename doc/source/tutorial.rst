@@ -68,10 +68,9 @@ functionalities are worth being highlighted:
   different value. An example that applies this function can be found in
   tutorial-example-abst_flat_comp.py
 - The :meth:`compare_with_extends(obj, library) <modeling.core.Object.compare_with_extends>`
-  displays to the user the items, both objects and properties, that are found exclusively
-  in one of the two objects that are being compared as well as the properties that are
-  shared but that correspond to a different value. An example that applies this function
-  can be found in tutorial-example-abst_flat_comp.py
+  displays the same type of information as the function above, but it accounts also for
+  any extended objects within the object hierarchy. An example that applies this
+  function can be found in tutorial-example-abst_flat_comp.py
   
   
 Further development
