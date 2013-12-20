@@ -383,9 +383,12 @@ class Object:
   
   def flatten_with_extends(self, library):
     """flatten_with_extends()
+    
+    Please see tutorial for an extended example that incorporates the use of this function.
     """
     abst = deepcopy(self)
     level = 0
+    
     
     if self.extends != None:
       temp = library.instanciate_obj(self.extends)
@@ -397,6 +400,12 @@ class Object:
     
     if level <= 0:
       for name, obj in abst.objects.items():
+        
+        if obj.extends != None:
+          temp = library.instanciate_obj(obj.extends)
+          temp = temp.flatten_with_extends(library)
+          obj.properties = dict(list(obj.properties.items()) + list(temp.properties.items()))
+      
         res = obj.abst_obj_prop(level-1)
         abst.properties[name] = None
                 
