@@ -2,8 +2,11 @@
 Tutorial
 ********
 
-An example
+Examples
 ==========
+
+A first example
+---------------
 
 We are going to model the following diagram:
 
@@ -16,13 +19,25 @@ This example also shows the behavior of the abstractions functions.
 
 .. literalinclude:: ../../tutorial-example.py
 
-An second example
-=================
+A second example
+----------------
 
 We demonstrate the functions that create, abstract, flatten and compare objects in :file:`tutorial-example-abst_flat_comp.py`
 at the root of the project directory.
 
 .. literalinclude:: ../../tutorial-example-abst_flat_comp.py
+
+More examples
+-------------
+
+More examples are available when directly launching the modules. It has been
+used as tests for the functionalities.
+
+To run these examples one can do::
+
+  python3 -m modeling.core
+  python3 -m modeling.library
+  python3 -m modeling.model
 
 All functionalities
 ===================
@@ -71,7 +86,6 @@ functionalities are worth being highlighted:
   displays the same type of information as the function above, but it accounts also for
   any extended objects within the object hierarchy. An example that applies this
   function can be found in tutorial-example-abst_flat_comp.py
-  
   
 Further development
 ===================

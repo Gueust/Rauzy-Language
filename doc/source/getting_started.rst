@@ -41,7 +41,7 @@ If that fails grab the latest version and install it with::
 
   > sudo easy_install -U Sphinx
 
-Now you are ready to build the documentation using
+Now you are ready to build the documentation using::
 
   > make html
 
