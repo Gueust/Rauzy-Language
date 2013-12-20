@@ -17,9 +17,9 @@ This example also shows the behavior of the abstractions functions.
 .. literalinclude:: ../../tutorial-example.py
 
 An second example
-==========
+=================
 
-We demonstrate the functiosn that create, abstract, flatten and compare objects in :file:`tutorial-example-abst_flat_comp.py`
+We demonstrate the functions that create, abstract, flatten and compare objects in :file:`tutorial-example-abst_flat_comp.py`
 at the root of the project directory.
 
 .. literalinclude:: ../../tutorial-example-abst_flat_comp.py
